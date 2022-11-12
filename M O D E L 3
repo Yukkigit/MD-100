@@ -1,0 +1,310 @@
+M O D E L 3
+Configuring authentication and authorization
+	--------------------------------------------
+
+	Athentication
+		----------------------------------------
+		The process that provides the users identity when he or she accesses a resource.
+
+			- Permissions are defined for resources internally 
+			- Permission values are verified whenever a user tries to access the resources
+
+	Authentication methods
+		> Kerberos version 5 protocol 
+			- Windows based systems use this as the main sign-in authentication method 
+		> NTLM
+			- orivudes backwards compatibility for systems and applciations (less flexible, less efficient and not as secure as Kerberos)
+		- Certificate mapping
+			- utilized in conjunctions to smart cards
+
+	Account Types
+		---------------------------------------
+		Local Accounts
+		An account that resides on the account locally.
+
+		Microsoft Account
+		A Microsoft account that is linked to a Microsoft Live ID, enables the user to have access to their Microsoft Services and online "Synced" data.
+
+		Domain Account
+		Accounts that are linked to a domain, provides access to resources within the domain (other clients, printers, servers using Active Directory)
+			Centrally Managed
+
+	Manage Local users and groups
+		---------------------------------------
+		Default Local user accounts
+			- used to manage access to the local client's resources based on the rights assigned to the account
+			- created automatically (build-in user) when Windows is installed.
+			- Can't be removed/deleted
+			- Don't provide access to network resources
+
+		Administrator account
+			- Has full control over files, directories, servieces and other resources on the local computer.
+			- Can create other users, assign rights and permissions
+				> The default Administrator account can't be deleted/renamed. The must be at least one administrator account on the local computer.
+				> Best practice is to disable the build-in Local administrator account and to create a new Administrator.
+
+		Default Account
+			- Build-in account.
+			- Should be left at default disabled state
+			- Used to run processes that are multi user aware or user agnostic.
+
+		Default local system accounts
+			- SYSTEM account
+			- NETWORK SERVICE account
+			- LOCAL SERVICE account
+
+		Using Groups (Build-in groups)
+			- Administrators
+			- Users
+			- Guests
+			- Device Owners
+			- Event Log Readers
+			- Hyper-V Administrators
+			- Network Configuration Operators
+			- Remote desktop users
+
+	Explore Domains and Workgroups
+		-------------------------------------------
+		Workgroup
+			- All computers have equal rights
+			- Con't be password protected.
+			- Has a limit of 20 computers
+			- All computers must be on the same local network.
+			- Works on all windows versions.
+			- Wotks on both IP versions: IPv4 and IPv6
+			- Every computer must have the same workgroup name to communicate.
+			- Requires security sharing permissions to be set.
+
+			User accounts are required to be set up on each computer. For when users access a network resources- they need to provide credentials to access the resource.
+
+		Domain
+			- Administrative boundary
+				> The Administrative account has full capabilities over all objects within the domain.
+			- Replication boundary
+				> AD DS replicates updated objects and synchronizes information between domain controllers.
+				> AD DS consists of three elements, or partitions:
+					>> The Schema
+					>> The Configuration partition
+					>> The domain partition (changes most frequently)
+			- Authentication boundary
+				> Enables users that are appart of the domain to authenticate to any resources apart of the domain. Domains in an AD DS forest trusts one another, and these trusts enables a suser from one domain to access resources held in another domain.
+
+			A computer can belong to one domain/workgroup only
+
+	Explore credential manager
+		--------------------------------------
+		Windows credential manager helps manage and maintain passwords
+
+	Explore Windows Hello
+		------------------------------------------
+
+		Windows hello provides support for a personal identification number (pin) or biometric authentication
+
+		Windows Hello addresses the folloing problems with passwords:
+			- Strong passwords can be difficult to remember, and users often reuse passwords on multiple sites.
+			- Server breaches can expose symmetric network credentials (passwords).
+			- Passwords are subject to replay attacks.
+			- Users can inadvertently expose their passwords due to phishing attacks.
+
+		Windows Hello authentication methods
+			- PIN
+			- Biometrics
+			- Hello
+			- For Bussiness
+			- configured by group policy or MDM
+			- Allows you to authenticate to:
+				> Microsoft account
+				> AD account
+				> Azure AD account
+				> Identity Provider Services or Relying Party Services that support Fast ID Online (FIDO) v2.0 authentication (in progress)
+
+	Configure password policies and user properties
+		-------------------------------------------------
+
+		Using group policy to configure password policies
+			Configurable options - Location = Computer Configuration\Windows Settings\Security Settings\Account Policies.
+
+			Setting 									Description 								Default Setting
+
+			Password policy\Enforce password history	Enforce password							By default, group policy remembers 24 passwords
+
+			Password policy\ Maximum password 			Maximum password age 						Default is 42 days
+
+			Password policy\Minimum password 			Minimum password age 						Default is one day
+
+			Password policy\Minimym password lenght		Minimum password lenght						Default is seven characters
+
+			Password policy\PWD complexity requirements	Passwords require to meet complexity req 	Three of the four complexity elements must be present. Enabled by default (uppercase, lowercase, numbers, S)
+
+			Account lockout policy\A Lockout threshold	Invalid sign-in attempts (A lock threshold)	Default value is 0 = never lock.
+
+		User account settings that can affect the sign-in process
+			Setting 		 							Description
+
+			User Logon name 							Username when signing in
+
+			Unlock account 								If the user has locked their account
+
+			User must change password at next logon		When enabled, user must change their password at next sign-in
+
+			User cannot change password 				If enabled, user cannot change their password - typically used for service accounts
+
+			Password never expires						When enabled, the user will not be prompted to change their password - overides password policies - set for service accounts and more.
+
+			Account is disabled							Enabling this setting prevents users from signing into their account
+
+			Smart card is required for 				 	
+			interactive logon							User is required to use smart card to perform sign ins
+
+			Account expires								Allows a date to be set for when an account expires
+
+	Explore user profiles and their contents
+		-----------------------------------------------------------------------
+
+		Each user has a folder within C:\Users that contains the users profile typically named after the username of the User
+
+			- User profiles
+				> Contains user-specific settings
+				> Are stored in C:\Users by default
+			- Include
+				> Registry settings
+				> Folders, including 
+					>> Appdata, Desktop, Favourites, Documents
+			- Public profile contents are included for all users
+
+		User profile contains
+			> NTuser.dat file - appart of the registry. Loaded when a user signs in - MAPS to HKEY_CURRENT_USER registry subtree - Contains user settings
+
+			> A set of folders
+				>> Application configuration fiels (AppData)
+				>> Desktop
+				>> Favorites
+				>> Documents
+				>> Downloads
+				>> Music, Pictures, Videos
+				>> Other folders specific applications create
+
+		Public profile
+			> By default there is a public profile availible to all users, C:\Users\Public
+
+
+
+==============================================================
+Manage Users and groups
+	==============================================================
+	Explore Active Directory
+		----------------------------------------------------------
+
+		- AD uses a structured data store as the basis for a logical, hierarchical organization of directory information, represented as objects.
+		- AD services (AD DS) facilitate authorization and managing permissions to the services and data those objects represent
+		- Organizations may have Hybrid Exchange deployments that inlocude on-premises Exhange Servers and a Microsoft 365 tenant that supports Exchange Online.
+		- Administrators can sychronize AD DS and Azure AD together using the Azure AD Connect Tool.
+			> Password Hash synchronization
+				>> sign in method that sync's the hash of a user's on-prem AD password with Azure AD
+			> Pass-through authentication
+				>> Sign-in method that allows the user to have the same sign- in password on prem and in Azure. 
+			> Federation intergration
+				>> AD FS - enables users to sign into Azure Services with on-prem passwords-while on corporate networks the users won't require their passwords again.
+			> Syncronization
+				>> Responsible for syncing/creating users, groups, and other objects - includes password hashes.
+			> Health Monitoring
+				>> provides robust monitoring in a central location of resources
+
+	Compare AD DS vs Azure AD
+		---------------------------------------------------------
+		Active Directory Domain Services (AD DS)
+			- AD DS is a true directory service, with a hierarchical X.500-based structure.
+			- AD DS uses DNS for locating resources such as domain controllers.
+			- You can quary and manage AD DS by using Lightweight Directory Access Protocol (LDAP) calls.
+			- AD DS primarily uses the Kerberos protocol for authentication.
+			- AD DS uses Organizational Units (OUs) and Group Policy Objects (GPOs) for management.
+			- AD DS includes computer objects, representing computers that join an Active Directory domain.
+			- AD DS uses trusts between domains for delegated management.
+
+		Azure AD
+			- Azure AD is primarily an identity solution, and it’s designed for internet-based applications by using HTTP (port 80) and HTTPS (port 443) communications.
+			- Azure AD is a multi-tenant directory service.
+			- Azure AD users and groups are created in a flat structure, and there are no OUs or GPOs.
+			- You can’t query Azure AD by using LDAP; instead, Azure AD uses the REST API over HTTP and HTTPS.
+			- Azure AD doesn't use Kerberos authentication; instead, it uses HTTP and HTTPS protocols such as SAML, WS-Federation, and OpenID Connect for authentication, and uses OAuth for authorization.
+			- Azure AD includes federation services, and many third-party services such as Facebook are federated with and trust Azure AD.
+	
+	Sign Into a Domain
+		--------------------------------------------------------------
+		Failure to sign into a domain could be due to the following reasons:
+			- Authentication fails
+			- Windows used cached credentials
+			- Authentication is very slow but successful
+
+		Reauthentication after applying/reconfiguring object rules (updating user's groups/permissions)
+			- To reauthenticate one must sign out and sign back in or restart the device
+
+			Typical failure might be because of
+				> Domain controller unreachable
+				> Name Resolution issues
+				> Physical network issues.
+
+		Azure AD authentication
+			Typically when a user attempts to sign in, the client computer must locate where the authentication services reside by using DNS.
+
+			Reasons for failure include:
+			- Name-resolution issues:
+			- Internet connectivity isn't availible
+			- Synchronization issues between on-premises AD DS and Azure AD
+
+	Manage users and groups using Active Directory
+		---------------------------------------------------------------
+
+		Active Directory groups
+			- Distribution groups 
+				> Used to greate email distibution lists. Can be used only with email applications - used to send to a collection of users.
+				> Distribution groups are not security enabled, which means they cannot be listed in discretionary access control lists (DACLs)
+			- Security Groups
+				- User rights
+				- Permissions
+
+			- Default security groups
+				> DnsAdmins
+				> Domain Admin
+				> Domain Computers
+				> Domain Users
+				> Enterprise Admins - 
+
+				> IIS_IUSRS - Built in group - Internet Information Services
+				> Print Operators
+				> Remote Desktop Users
+
+================================================================	
+Configure User account control
+	================================================================
+	Explore user account control
+	---------------------------------
+		UAC is a collection of features
+			- File and registry redirection
+			- Installer Detection
+			- UAC Prompt
+			- ActiveX Installer Service
+
+	Examine how UAC works
+	---------------------------------
+		Standard users
+			(can pefrom the following tasks without UAC)
+				- Install Windows update
+				- Install Drivers from Windows update
+				- View windows settings
+				- Pair with bluetooth devices
+				- Reset network adapter / perform networ-diagnostic and repair tasks
+
+		Administrative users
+			(can perform the following tasks)
+				- Read/write/enact permissions for all users
+				- All windows permissions
+
+	Understand UAC elevation prompts
+	
+
+
+
+
+
+

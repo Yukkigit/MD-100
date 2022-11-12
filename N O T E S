@@ -1,0 +1,305 @@
+N O T E S
+Module 2
+
+DIFFERENT PROCESSES AND METHODS OF INSTALLING WINDOWS 10/11
+===========================================================
+
+1.	Wipe and reimage the device
+2.	Install a custom enginered image
+3	Reconfigure the existing OS to the orginization's desired spesifications
+
+Methods
+===========================================================
+>	In-place upgrade
+		>> Upgrading the existing OS to a newer version/feature release while keeping the user data intact
+
+		>> Phases - Checking the system, Installing windows with Windows preinstallation enviorment (PE), The first setup, Installing the windows operating system and the second startup
+
+>	New deployment
+	> Involves performing a clean installation.
+		>> Install media
+		>> System Image
+		>> Windows Autopilot
+
+>	Refresh
+	> Reverts the machine to its original state of the image used to install windows.
+
+>	Provisioning
+	> Windows Configuration Designer Tool
+		> Used for provisioning packages with spesific configurations and settings to devices
+
+>	Migration (wipe-and-load, side-by-side)
+	> When migrating a user from the one OS to the other.
+		>> Side-By-Side migration
+			>>> Replacing the users device - backup user settings, perform a clean installation, reinstall applications, restore user settings on destination device (new device)
+
+		>>	In-place migration
+			>>> "Wipe and load"
+
+Shift F10 to access CMD within OOBE
+
+Microsoft Deployment Toolkit, Windows Deployment Services, Endpoint Configuration Mnager or Answer file.
+
+
+
+============================================================
+UPGRADE AND MIGRATE WINDOWS CLIENTS
+============================================================
+
+The process of upgrading Win 10
+>	Evaluate 	- Check hardware requirements (Pc health check/Update Compliance, Endpoint Analytics). Check program & driver compatabilities on the OS - Check out Windows ADK for testing
+>	Back Up 	- Make use of Onedrive, or the USMT (User state migration tool)
+>	Upgrade		- 
+>	Verify		- 
+>	Update
+
+-------------------------------
+Explore supported upgrade paths
+-------------------------------
+https://learn.microsoft.com/en-us/training/modules/upgrade-migrate-windows-clients/3-explore-supported-upgrade-paths
+
+>	Windows OS editions can't downgrade from Pro edition to Home addtion
+>	Upgrading to the relative edditons is possible (next level - Home, Pro, Enterprise, Education)
+>	In Windows 10, changing edditons is easier than ever, the OS now reflects on te license as to what eddition to have active / The OS refelects the new license if the license changes to another edtion
+
+Windows S Mode - created for STREAMLINED security and performance while providing a familiar Windows experience
+
+-------------------------------------------------
+EXAMINE THE PROCESS OF MIGRATING WINDOWS CLIENTS
+-------------------------------------------------
+
+Migration process steps:
+>	Back Up
+> 	Install Windows
+>	Update
+>	Install Applications
+>	Restore data 
+
+---------------------------------------------
+COMPARE UPGRADE AND MIGRATION CONSIDERATIONS
+---------------------------------------------
+
+In-place upgrade
+	Perform an inplace upgrade when you want to replace the existing version of Windows and keep all user applications, files and settings.
+
+In-place upgrade using feature update
+	The process that is handled within Settings > Update and security.. This process can happen in the background and setup.exe is not required to run for this upgrade.
+
+Refresh
+	Easier than perfomring an in-place migration - As you can keep user data in tact
+
+Migration
+	Primarily used when moving the exisiting user to a new computer
+
+Side-by-side migration
+	Used when replacing the users device. Use USMT to migrate data and settings to the new target deivce
+
+In-Place migration
+	Pridominantly used to remove unmanged, excessive, non-standard OS configurations or efforts to clean up years of legacy applications and data.
+
+
+------------------------
+Upgrade vs. Migration
+-----------------------
+
+Consider the following advantages and disadvantages
+
+In-place upgrade considerations
+-------------------------------
+Advantages										Disadvantages
+>	Retains user, application settings			> 	Does not take advantage of the oppertunity to start fresh
+>	Preserves installed applications			> 	Small chance of preserved applications may not work after upgrading
+>	Does not require extra storage				>	Remnant files or settins from in-place upgrade may contribute to performance and security issues
+>	Affects user productivity minimally			> 	Some upgrade paths may not be supported
+>	Provides a simpler setup process 			
+>	Rollback is available
+
+
+Migration considerations
+------------------------
+Advantages 												Disadvantages
+>	Oppertunity to clean up exisiting computers			> 	Require the use of migration tools / Capture restore user settings 
+>	Allow for installation of any editions				> 	Requires reinstallation of applications
+>	Provides an opertunity to reconfigure hardware		> 	Requires storage space for user files to be migrated
+>	Malicious software will be removed					> 	Will have an impact on user productivity
+
+s1
+inplace upgrade with feature
+s2
+side by side
+s3
+inplace upgrade
+s4
+in place migration
+
+=========================
+	DEPLOYMENT METHODS
+=========================
+
+Modern
+	- Windows AutoPilot
+	- In-Place upgrade
+Dynamic
+	- Subscription activation
+	- Azure AD & MDM
+	- Provisioning Packages
+Traditional
+	- Bare Metal
+	- Refresh (wipe and load)
+	- Replace
+
+=============================
+Explore imaging and autopilot
+=============================
+
+Benefits															Disadvantages
+--------															-------------
+
+- Eliminates repetetive tasks and manual installations				- Takes a lot of effort to create and maintain,
+- Removes inconsisitancy and potential user errors					- Very complex and requires tools to implement / manage
+- Can be done remotely with little to none action from IT's 		- Consumes bandwidth
+
+-----------
+Auto Pilot
+-----------------------------------------------------------
+Used to assist with managing images/reimage devices and maintain the fleet from a remote perspective
+
+
+==============================
+	DEPLOYMENT STRATAGIES
+==============================
+Several methods and stratagies are availible for different scenarios and should be considered when attempting to imaging/deployment processes.
+
+
+High-Touch Deployment (HTI)
+----------------------
+(Small sized Organizations 50-100 clients)
+"High-touch retal media deployment stratagy" - Simplest way to deploy Windows. Insert Windows media and run the setup program - manual installation that requires each prompt to be answered within the setup program.
+
+"High-touch with standard image" - Involves the creation of a standard image by using Windows ADK.
+
+Lite-Touch Deployment (LTI)
+---------------------
+(Medium-sized organizations (200-500 clients))
+Uses management tools such as MDT or Microsft Intune. - Uses a centrally managed console to automate the delivery of the OS, configurations and applications.
+
+Zero-Touch Deployment (ZTI)
+---------------------------
+(Large computers - 500 client computers)
+Uses MDT and/or Intune togehter with Microsoft Endpoint Configurations Manager to deliver more streamlined, fully automated deployment that doesn't require user interaction.
+
+Bring your Own Device (BYOD)
+----------------------------
+Referes to deploying configurations and applications to devices the organization doesn't own.
+This stratagy makes use of Mobile device Management (MDM) such as Microsoft Intune to manage personally owned devices.
+
+
+
+=============================
+EXPLORE DEPLOYMENT TOOLS
+=============================
+
+Windows Assesment and Deployment Kit
+------------------------------------
+Windows ADK contains core assesment and deployment tools - Including:
+- Deployment Image Servicing and Management (DISM)
+- Windows Imaging and Configuration Designer (Windows ICD)
+- Windows System Image Manager (Windows SIM)
+- User State Migration Tool (USMT)
+- Volume Management Tool (VAMT)
+- Windows ASsessment Services
+- Windows Performance Toolkit (WPT)
+- Application Compatibility Toolkit (ACT)
+- Microsoft SQL Server 2012 Express
+
+
+Deployment Image Sevicing and Management (DISM)
+-----------------------------------------------
+- Enables you to create and manage images.
+		Code to capture an Windows partition to a USB storage drive
+		"Dism /Capture-Image /ImageFile:"D:\Images\Fabrikam.wim" /CaptureDir:C:\ /Name:Fabrikam"
+
+- DISM Offline Servicing 
+		Enables you to change images while they aren't in use.
+		Example code of adding a driver to an offline image
+		"DISM /Mount-Image /ImageFile:C:\test\images\install.wim /MountDir:C:\test\offline
+		 DISM /Image:C:\test\offline /Add-Driver /Driver:C:\drivers\mydriver.inf
+		 DISM /Unmount-Image /MountDir:C:\test\offline /Commit"
+
+- Windows Imaging and Configuration Designer
+	------------------------------------------
+	Designed to assist with the creation and provisioning of packages.
+
+- Windows System Image Manager (Windows SIM)
+	------------------------------------------
+	Used to create unattended installation answer files (Unattend.xml)
+
+- Volume Activation Management Tool (VAMT)
+	-----------------------------------------
+	Graphical tool used to automate and manage the activation of windows
+
+- Windows Preinstallation Environment (Windows PE)
+	-----------------------------------------------
+	Minimal 32-bit or 64-bit operating system with limited services built on the windows kernel.
+	- downloades seperatly = https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/download-winpe--windows-pe?view=windows-11
+
+- Windows Deployment Services (WDS)
+	----------------------------------
+	WDS enables deploument of Windows operating systems.
+	- Network based installation without admins requiring to visit each computer or install directly from media (CD/DVD)
+	- Add images to a server running WDS - transmits the image to clients using the mutlicast functionality
+	Requires
+	- AD DS, DCHP, DNS
+	Manage
+	- WDSUTIL command, Powershell or MMC snap-in
+
+- Microsoft Deployment tool
+	--------------------------
+	Two main parts
+
+	Lite-Touch (LTI) - Stand alone deplpyment solution
+	Zero Touch (ZTI) - Extention System Center 2012 R2 configuration manager
+
+
+--------------------------------------
+Explore the User State Migration Tool
+--------------------------------------
+
+USMT captures user accounts, user files, operating system settings and application settings of an existing machine.
+	- Can be used for both PC replacements and PC refresh migrations
+
+USMT enables you to do the following:
+	- Configure migration according to your bussiness needs
+	- Fit your customized migration into your automated deployment process using the ScanState and Loadstate tools - control collecting and restoring user files and settings
+	- Perform offline migrations - By using the ScanState command in Windows PE
+
+Identifying which components to migrate
+---------------------------------------
+
+	- User Accounts 					 
+	- Application settings				
+	- Operating-system settings	
+	- File types, folders and settings
+
+Using USMT
+----------
+The components of USMT include:
+
+	- ScanState.exe 	- Scans the computer, collects the files and settings and then creates a store. 
+	- LoadState.exe 	- Migrates the files and settings, one at a time from the store to a temporary location on the desitination computer.
+
+Specify MigApp.xml, MigUser.xml, and MigDocs.xml with the ScanState and LoadState commands to migrate application settings, user profile data, and user folder/files to computers that are running Windows.
+
+
+-----------------------------------
+Explore client virtualization
+-----------------------------------
+Hyper V - Local virtualization
+Windows Sandbox
+	- Pristine		- Everythime Windows sandbox runs, it is a clean instance
+	- Disposable	- nothing persists on the device, everything is deleted within the Sandbox after its closure
+	- Secure 		- Uses hardware-based virtualization for kernal isolation, relies on Microsoft Hypervisor to run a separate kernel
+	- Efficient 	- Uses kernel scheduler, smart memory management and virtual GPU
+
+
+

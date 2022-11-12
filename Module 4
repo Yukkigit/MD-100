@@ -1,0 +1,79 @@
+Module 4
+	------------------------------
+		Implement Device registration
+
+	Understand the challanges to data access for multiple device types
+		- Devices 	- Management
+		- Apps		- Access
+		- Data		- Protection
+
+	New challanges to IT departments include:
+		- allowing users to work on devices of their chouce, while providing consistent access to corporate resources.
+		- Allowing work from home/remote work scenarios
+		- Unified enviormend between company-owned devices and BYOD devices
+		- Protecting data, enforcing policies and compiance requirements
+
+		------------------------------------------------
+		Explore the Microsoft device strategy framework
+
+		Four core framework
+		- low trust
+			- Here's your own device
+		- High trust
+			- Choose your own device (CYOD)
+		- High freedom
+			-On your own Employee owned
+		- Low trust
+			- BYOD - Company managed
+			- BYOD - employee managed of company policies
+		- Low freedom
+
+		On your own (highest security risk)
+			- Employees provide their own devices. No security policies are in place, no management of devices and any device is acceptable
+
+		Bring your own device
+			- BYOD unmanaged device
+				> Company does not manage the devices
+				> Users are responsible for implementing and managing company policies on their devices
+
+		Choose your own device (also called CYOD)
+			- The company provides a device to the employees
+			- The company provides/allows the users to choose from a list of devices that are compatible with the company's apps and management infrastructure
+
+		Here's your own device
+			- One device is approved for the company's mobile platform and the device is provided to the employees.
+
+
+	Explore device registration
+		------------------------------------
+		After a user enrolls a device:
+			- The device is associated with the user's account in the company directory
+			- The device object is created in AD DS = establishes a link between the user and the device
+			- the user certificate is installed on the device
+
+	Examine how device registration works
+		------------------------------------
+
+		Main purposes of the device registration feature are to provide
+			- Registration in AD DS for non-domain joined devices
+			- SSO for selected application and resources in a company's internal network
+		Device registration works by using device registrations service and Active directory Dederation Services with Device authentication enabled.
+
+		When a user registers a device, Device registration service will provision a certificate for the device - the cert is used to authenticate the device with company resources.
+
+	Assess infrastructure requirements to support device registration
+		----------------------------------------
+		The following requirements must be met for Device Registration to be compatible.
+
+			- Active Directory enviorment
+			- Public key infrastructure
+				> CRL
+				> AIA
+				> Delta CRL
+				----pkiview.msc - view certificates
+			- AD FS
+			- Device Registration service
+			- A DNS record for the host named Enterpriseregistration 
+				> The DNS server must resolve this name to the IP address of the AD FS server. Must also use one of the Subject Alternative Name attributes in the SSL cert
+			- Web Application Proxy
+			- A supported operating system on the device
