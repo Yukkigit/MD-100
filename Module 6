@@ -1,0 +1,229 @@
+Module 6
+Configure IP Network Connectivity
+	======================================
+	\Settings > Network & Internet
+
+		- Change adapter options
+		- Change advanced sharing options
+		- Launch network and sharing options
+		- Configure internet options
+		- Change Windows firewall settings
+
+		Network and Sharing Center
+		- Change advanced sharing settings
+		- Internet options
+		- Windows Firewall
+		- Network and internet troubleshooting Wizard
+	\Explore IPv4 Settings
+			Computers make use of ip addresses to communicate with one another, ip addresses are used to group a set of computers within a subnet address which can be centrally managed. These addresses identifies a computers location on the network (logically).
+			examples: 10.0.0.0/24, 172.160.0.1/24, 192.168.0.0/24 (Class A, Class B, Class C)
+			Class D (Multicasting) and Class E (Reserved addresses - experimental use) 
+
+		\\Overview of connecting with another host
+		----------------------------------------
+
+			Before a host can connect with another host they require each other's MAC addresses to be known, a physical connection also needs to be established. Once the MAC address is known it will be cached locally and continuous communication can be made.
+
+		\\Components of an IPv4 address
+		----------------------------------------
+			IPv4 used 32-bit addresses and is stored in binary format
+			> 11000000101010000000000111001000
+
+			IPv4 devies these binary addresses in 4 octets
+			> 11000000.10101000.00000001.11001000
+
+			And converts it into decimal addresses
+			> 192.168.1.200
+
+			Within the subject mask you will find the:
+			> Network address
+			> Host address
+
+		\\Simple IPv4 networks
+			Class	First octets	Default Subnet mask		Number of networks		Number of hosts per network
+			> A 	1 to 127		255.0.0.0 				126 					16,777,214
+			> B 	128 to 191		255.255.0.0 			16,384					65,534
+			> C 	1291.223		255.255.255.0 			2,097,152				254
+
+		\\Complex IPv4 networks
+			CIDR (Classless interdomain Routing)
+			172.16.16.1/255.255.240.0
+			172.16.16.1/20
+			11111111.11111111.11110000.00000000
+
+			Powershell commands
+			Get NetIPAddress
+			Get NetIPv4Protocol
+			Get netIPInterface
+			Set NetIPAddress -InterfaceAlias Wi-Fi -IP address 192.168.1.1
+			Set NetIPv4Protocol
+			Set NetIPInterface
+			Get NetRoute
+			Test-Connection
+			Resolve-DNSName
+			Get NetConnectionProfile
+			Clear-DNSClientCache
+			Get-DNSClient
+			Get-DNSCleintCache
+			Get-DNSCleintGlobalSetting
+			Get-DNSCleitnServerAddress
+			Register-DNSClient
+			Set-DNSClient
+			Set-DNSCLientGlobalSetting
+			Set-DNSCLientServerAddress
+
+			netsh interface ipv4 set address name="local area connection" source=static addr=192.168.0.3 mask=255.255.255.0 gateway 192.168.0.1
+	\Examine tools for troubleshooting network connections
+			- Event Viewer
+			- Windows network diagnostics
+			- IpConfig
+			- Pint
+			- Tracert
+			- NSLookup
+			- Pathping
+			- Windows Powershell
+	\Examine IPv6 addressing
+			IPv6 are expressed in hexadecimal notation
+			2001:DB8::2F3B:2AA:FF:FE28:9C5A
+
+			https://learn.microsoft.com/en-us/training/modules/configure-ip-network-connectivity/9-examine-ipv6-addressing
+
+
+Explore Name Resolution
+	======================================
+	\Describe Name Resolution
+		Name resolution is the process of converting computer names to IP addresses. Name resolution is an essential part of computer networking because it makes it easier to identify nodes on the networks by replacing the exxessive IPv4 & IPv6 addresses with names.
+
+		Methods of name resolution
+		- Windows Internet Name Service (WINS) - FQDN
+		- LMHost resolution (local host)
+		- DNS 
+
+		Process of name resolution:
+		1. Checking whether the hostname is on the local machine
+		2. Checks the local hosts file
+		3. sSends a request to the DNS server for further information
+
+		NetBIOS - nonhierarchical name - 16 character name - represents a single computer/group of computers - the first 15 charachters are used for a specific computers name - 16th character is used to identify the resource/service of the computer
+	\Describe DNS
+		DNS is a service that manages the resolution of hostnames to IP addresses.
+
+		Structure of DNS
+			DNS consists on a hierarchy of domains and subdomains. A DNS zone is a specific portion that namespace that resides on a DNS server in a zone file. DNS uses forward and reverse lookup zones to satisfy the name requests
+
+		Foward lookup Zones
+			(Responsible for hosting different record types)
+			A 		= Host record
+			SRV 	= Service record 		- used to locate domain controllers/global catalog servers
+			MX 		= Mail exchange recors 	- used to locate mail servers responsible for a domain
+			CNAME 	= Canonical name record - resolve to another host name (Alias)
+
+		Reverse lookup zones
+			(PTR Recors)
+			Used to resolve IP addresses to host names
+
+		How names are resolved with DNS
+		(Process)
+		1. Workstation queries the local DNS server for the IP address www.microsoft.com.
+		2. If the local DNS server does not have the information, it queries a root DNS server for the location of the .com DNS servers.
+		3. The local DNS server queries a .com DNS server for the location of the microsoft.com DNS servers.
+		4. The local DNS server queries the microsoft.com DNS server for the IP address of www.microsoft.com.
+		5. The microsoft.com DNS server returns the IP address of www.microsoft.com to the local DNS server.
+		6. The local DNS server returns the result to the workstation.
+	\Explain how to troubleshoot name resolution
+		The primary tools for troubleshooting NR is by using
+			- IPConfig
+			- NSLookup
+			- Get-netipaddress
+			- Get-netipv4protocol
+			- resolve-dnsname
+			(clear DNS resolver cache on each resolution attempt)
+
+		Commands
+			Testing connections
+				- Ping
+				- NSLookup
+				- Test-Connection
+			Verifying entries
+				- ipconfig /displaydns
+				- Get-DNSclientCache
+	\Configure and test name resolution settings in Windows
+		Setting the entries within adapter settings
+
+		CMD Command
+		netsh interface ipv4 set dnsservers "Interface Name" static "preferred-DNS-address" primary
+		netsh interface ipv4 add dnsservers "Interface Name" "alternate-DNS-address" index=2
+		Example 	netsh interface ipv4 set dnsservers "Wi-Fi" static 1.1.1.1 primary
+
+		Powershell commands
+		Get-DnsClientServerAddress
+		Get-DNSClientServerAddress "InterfaceAlias" –ServerAddresses ("preferred-DNS-address", "alternate-DNS-address")
+		Example 	Set-DNSClientServerAddress "Wi-Fi" –ServerAddresses ("1.1.1.1","1.0.0.1")
+
+
+Configure Wireless network connectivity
+	=====================================
+	\Describe wireless technologies
+
+		Wireless networking uses radio waves to connect devices wirelessly to other network devices. Wireless devices typically run on 802.11x wireless standards
+
+		Wireless standards
+			- 802.11a 	= 54 mbps  - 5 Ghz
+			- 802.11b	= 11 mbps  - 2.4 Ghz
+			- 802.11e	= multimedia support
+			- 802.11g	= 54 mbps  - 2.4 Ghz - backwards compatible with (b)
+			- 802.11n	= 100 mbps - 2.4 Ghz & 5 Ghz
+			- 802.11ac	= 433 mbps - 5 Ghz
+
+		Wireless Security
+			Wired Equivalent Privacy (WEP)	- least secure
+			Wifi Protected Access (WPA)		- WPA Personal & WPA Enterprise = Makes use of encrypted keys & Radius servers
+											- WPA 2, WPA 3
+
+	\Configure wireless settings in windows
+		Note miracast protocol
+		- projecting a display wirelessly
+		- Miracast adapter / hardware guard
+	\Discuss the considerations for implementing wireless network within origanizations
+
+Explore Remote access
+	==========================================
+	\Describe how to use VPNs to connect to a remote network
+		A VPN provides a virtual point-to-point connection to a remote private network. Note this link is encapsulated, wrapped or prefixed with a header.
+
+		Two types of VPN connections:
+		Remote access (SSL VPN)
+		Site-to-Site VPN
+
+		VPN connections in Windows can use:
+		- Point-to-point tunneling protocol
+		- Layer two tunneling protocol with IPsec (L2TP/IPsec)
+		- Secyre Socket Tunneling Protocol (SSTP)
+		- Internet Key Exchange version 2 (IKEv2)
+
+		All VPN connections share the following charatersitsic:
+		- Encapsulation
+		- Authentication
+		- Data encryption
+
+		Common variables to take in account when setting up Conditional Access:
+		- User or group membership
+		- IP Location information
+		- Device
+		- Application
+		- Real-tume and calculated risk detection
+		- Microsoft Defender for cloud apps
+
+		Windows information protection
+		Additional remote access usability improvements that you can configure via VPN profiles include:
+		- Always on
+		- App-triggered VPN
+		- Traffic filters
+		- Lockdown VPN
+
+	\Explain how Always On VPN can help remote users to connect
+		Most organizations supporting VPN access typically have the technologies deployed that are needed for Always On VPN. Other than your Domain Controller and DNS servers, the Always On VPN deployment requires an NPS (RADIUS) server, a Certification Authority (CA) server, and a Remote Access (Routing/VPN) server. Once the infrastructure is set up, you must enroll clients and then connect the clients to your on-premises securely through several network changes.
+
+		 Always On VPN also provides more granular controls over how traffic is routed and support for conditional access policies. Always On VPN only supports Windows 10 and later clients, while
+	\Discuss the consideration of enabling remote access for your users
+
