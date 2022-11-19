@@ -87,8 +87,6 @@ Configure IP Network Connectivity
 			2001:DB8::2F3B:2AA:FF:FE28:9C5A
 
 			https://learn.microsoft.com/en-us/training/modules/configure-ip-network-connectivity/9-examine-ipv6-addressing
-
-
 Explore Name Resolution
 	======================================
 	\Describe Name Resolution
@@ -159,8 +157,6 @@ Explore Name Resolution
 		Get-DnsClientServerAddress
 		Get-DNSClientServerAddress "InterfaceAlias" –ServerAddresses ("preferred-DNS-address", "alternate-DNS-address")
 		Example 	Set-DNSClientServerAddress "Wi-Fi" –ServerAddresses ("1.1.1.1","1.0.0.1")
-
-
 Configure Wireless network connectivity
 	=====================================
 	\Describe wireless technologies
@@ -185,7 +181,6 @@ Configure Wireless network connectivity
 		- projecting a display wirelessly
 		- Miracast adapter / hardware guard
 	\Discuss the considerations for implementing wireless network within origanizations
-
 Explore Remote access
 	==========================================
 	\Describe how to use VPNs to connect to a remote network
@@ -226,4 +221,79 @@ Explore Remote access
 
 		 Always On VPN also provides more granular controls over how traffic is routed and support for conditional access policies. Always On VPN only supports Windows 10 and later clients, while
 	\Discuss the consideration of enabling remote access for your users
+
+
+Employ Remote access
+	=====================================
+	\Describe Remote Desktop in Windows
+
+
+		To be able to connect to devices via Remote desktop, be sure to gather the following
+			System name/Host name
+			IP address
+
+		Also ensure that remote connectionsa re allowed within Advanced System settings (Sysdm.cpl)
+
+		Using remote desktop with Azure AD-Joined devices
+		You must allow remote connection for the local Authenticated Users. Spescific Azure AD users can be added with the following Powershell cmdlet:
+			net localgroup "Remote Desktop Users" /add
+			"AzureAD\\the-UPN-attribute-of-your-user(example@consto.com)"
+
+	\Enable and use Remote assistance, including Easy Connect
+		Enable remote access
+			- Do this within Advanced system properties (sysdm.cpl)
+			- Enable remote desktop
+			- You can allow additional users to connect to the computer
+
+	\Verify Windows firewall is configured correctly
+		Within Windows Defender Firewall / System Security 
+			- Select allow app or feature through WF
+			- Select remote assistance
+			- Allow connections for Remote Desktop
+
+	\Configure and use Remote assistance
+		You can make use of invitations to allow someone to connect to your computer remotely
+			- Search invite within control panel or windows search
+			- A invitation file will be generated, you can use this by emailing it to someone or saving it for later purposes.
+			- You can also make use of the Easy connection application
+
+		Quick assist
+			Enables remote access for assistance.
+			Does not sign users out (like Remote desktop does)
+			Requires a one time pin for authentication purposes
+
+	\Examine Remote desktop services
+		RDS is formerly known as Terminal Services
+		Applications are running on a Remote session host (RD Session host) server.
+
+			- To have any access to the RDS server, the user must be appart of th Remote Desktop users group on the computer they are connecting to.
+			- Users are typically employed with thin clients
+
+	\User remote commands in Windows PowerShell
+		Windows powershell remoting features are supported by thr WS-Management protocol and the Windows Remote Management (WinRM) service 
+
+			Commands to add run to be able to connect to a device on a different domain/workgroup
+			- get-serivice winrm (Checks the status of Windows remote managemnt)
+			- Enabple-PS Remoting (configures PS for remoting)
+
+			Adding a host to your WinRM trusted host platform
+			- winrm s winrm/config/client '\@{TrustedHosts="RemoteComputer"}'
+
+			When working on computers within workgroups/homegroups - connect using their HTTPS as transport or add the machine to the TrustedHosts configuration settings (verify that the service is running "winrm")
+			- winrm quickconfig
+
+		\Windows admin Center (WAC)
+			Browser based managemetn tool that lets you manage clients and servers remotely. Primary function to manage servers.
+			https://learn.microsoft.com/en-us/windows-server/manage/windows-admin-center/deploy/install
+			https://www.cbtnuggets.com/blog/certifications/microsoft/how-to-install-windows-admin-center
+
+			WAC comes with Role based access control (RBAC)
+			- Administrators
+			- Readers
+			- Hyper-V Administrators
+
+
+
+	\Describe Azure Remote Desktop Services
+
 

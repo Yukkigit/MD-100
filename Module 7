@@ -1,0 +1,11 @@
+Module 7
+Manage storage on Windows Clients
+	\ Describe the different ways to access storage.
+	\ Explain the difference beteen network-attatched storage (NAS) and storage area networks (SANs).
+	\ Compare MBR and GUID Partition tables (GPT) disks.
+	\ Describe how to convert a basic disk to a dynamic disk.
+	\ Describe the tools availible for managing disks.
+	\ Describe a simple volume.
+
+	\ Describe mirrored, spanned and striped volumes.
+	\ Create volumes, resize and manage volumes.
