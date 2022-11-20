@@ -13,7 +13,7 @@ Configuring authentication and authorization
 		> Kerberos version 5 protocol 
 			- Windows based systems use this as the main sign-in authentication method 
 		> NTLM
-			- orivudes backwards compatibility for systems and applciations (less flexible, less efficient and not as secure as Kerberos)
+			- provides backwards compatibility for systems and applciations (less flexible, less efficient and not as secure as Kerberos)
 		- Certificate mapping
 			- utilized in conjunctions to smart cards
 
@@ -38,7 +38,7 @@ Configuring authentication and authorization
 			- Don't provide access to network resources
 
 		Administrator account
-			- Has full control over files, directories, servieces and other resources on the local computer.
+			- Has full control over files, directories, services and other resources on the local computer.
 			- Can create other users, assign rights and permissions
 				> The default Administrator account can't be deleted/renamed. The must be at least one administrator account on the local computer.
 				> Best practice is to disable the build-in Local administrator account and to create a new Administrator.
@@ -67,11 +67,11 @@ Configuring authentication and authorization
 		-------------------------------------------
 		Workgroup
 			- All computers have equal rights
-			- Con't be password protected.
+			- Can't be password protected.
 			- Has a limit of 20 computers
 			- All computers must be on the same local network.
 			- Works on all windows versions.
-			- Wotks on both IP versions: IPv4 and IPv6
+			- Works on both IP versions: IPv4 and IPv6
 			- Every computer must have the same workgroup name to communicate.
 			- Requires security sharing permissions to be set.
 
@@ -87,7 +87,7 @@ Configuring authentication and authorization
 					>> The Configuration partition
 					>> The domain partition (changes most frequently)
 			- Authentication boundary
-				> Enables users that are appart of the domain to authenticate to any resources apart of the domain. Domains in an AD DS forest trusts one another, and these trusts enables a suser from one domain to access resources held in another domain.
+				> Enables users that are appart of the domain to authenticate to any resources apart of the domain. Domains in an AD DS forest trusts one another, and these trusts enables a user from one domain to access resources held in another domain.
 
 			A computer can belong to one domain/workgroup only
 
@@ -111,7 +111,7 @@ Configuring authentication and authorization
 			- Biometrics
 			- Hello
 			- For Bussiness
-			- configured by group policy or MDM
+			- Configured by group policy or MDM
 			- Allows you to authenticate to:
 				> Microsoft account
 				> AD account
@@ -124,19 +124,19 @@ Configuring authentication and authorization
 		Using group policy to configure password policies
 			Configurable options - Location = Computer Configuration\Windows Settings\Security Settings\Account Policies.
 
-			Setting 									Description 								Default Setting
+			Setting 					Description 								Default Setting
 
-			Password policy\Enforce password history	Enforce password							By default, group policy remembers 24 passwords
+			Password policy\Enforce password history	Enforce password						By default, group policy remembers 24 passwords
 
-			Password policy\ Maximum password 			Maximum password age 						Default is 42 days
+			Password policy\ Maximum password 		Maximum password age 						Default is 42 days
 
-			Password policy\Minimum password 			Minimum password age 						Default is one day
+			Password policy\Minimum password 		Minimum password age 						Default is one day
 
-			Password policy\Minimym password lenght		Minimum password lenght						Default is seven characters
+			Password policy\Minimum password lenght		Minimum password lenght						Default is seven characters
 
-			Password policy\PWD complexity requirements	Passwords require to meet complexity req 	Three of the four complexity elements must be present. Enabled by default (uppercase, lowercase, numbers, S)
+			Password policy\PWD complexity requirements	Passwords require to meet complexity req 			Three of the four complexity elements must be present. Enabled by default (uppercase, lowercase, numbers, S)
 
-			Account lockout policy\A Lockout threshold	Invalid sign-in attempts (A lock threshold)	Default value is 0 = never lock.
+			Account lockout policy\A Lockout threshold	Invalid sign-in attempts (A lock threshold)			Default value is 0 = never lock.
 
 		User account settings that can affect the sign-in process
 			Setting 		 							Description
@@ -145,11 +145,11 @@ Configuring authentication and authorization
 
 			Unlock account 								If the user has locked their account
 
-			User must change password at next logon		When enabled, user must change their password at next sign-in
+			User must change password at next logon					When enabled, user must change their password at next sign-in
 
-			User cannot change password 				If enabled, user cannot change their password - typically used for service accounts
+			User cannot change password 						If enabled, user cannot change their password - typically used for service accounts
 
-			Password never expires						When enabled, the user will not be prompted to change their password - overides password policies - set for service accounts and more.
+			Password never expires							When enabled, the user will not be prompted to change their password - overides password policies - set for service accounts and more.
 
 			Account is disabled							Enabling this setting prevents users from signing into their account
 
@@ -196,8 +196,8 @@ Manage Users and groups
 		----------------------------------------------------------
 
 		- AD uses a structured data store as the basis for a logical, hierarchical organization of directory information, represented as objects.
-		- AD services (AD DS) facilitate authorization and managing permissions to the services and data those objects represent
-		- Organizations may have Hybrid Exchange deployments that inlocude on-premises Exhange Servers and a Microsoft 365 tenant that supports Exchange Online.
+		- AD services (AD DS) facilitate authorization and managing permissions to the services and data those objects represent.
+		- Organizations may have Hybrid Exchange deployments that include on-premises Exhange Servers and a Microsoft 365 tenant that supports Exchange Online.
 		- Administrators can sychronize AD DS and Azure AD together using the Azure AD Connect Tool.
 			> Password Hash synchronization
 				>> sign in method that sync's the hash of a user's on-prem AD password with Azure AD
