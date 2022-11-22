@@ -6,3 +6,9 @@ Provision packages
 Create a personalized xml file for startup/taskbar
 Copy network settings
 Play with WAC
+Perform disk scenarios via powershell, perform dynamic disk scenario's as well.
+          - Get-Disk			
+					- Clear-Disk
+					- Initialize-Disk
+					- Set-Disk
+					- Get-Volume
