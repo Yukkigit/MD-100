@@ -1,0 +1,337 @@
+Module 7
+	Manage storage on Windows Clients
+		---------------------------------
+		\ Describe the different ways to access storage.
+			\\Understand storage options
+				> Local hard disk
+					Advantages: Availibility & Performance
+					Disadvantages: Backup & Physical failures
+
+				> Virtual hard disk
+					(types: .vhd & .vhdx)
+					Advantages: Portability & Backup
+					Disadvanatages: Performance and Physical failures
+					Note .vdhx - metadata structure that reduces corruption and improves alignment on large sector disk. Supports up to 64 TB
+
+				> Server-based storage
+					Advantages: Redundancy, Backup & Performance
+					Disadvantages: Availibility, Performance
+
+		\ Explain the difference beteen network-attatched storage (NAS) and storage area networks (SANs).
+		
+			\NAS (Network-Attatched Storage)
+
+				A NAS is a typical dedicated storage device, which is accessible over the network.
+				Protocols: CIFS, SMB and NFS
+
+			\SAN (Storage area network)
+				Storage subsystems, computers and networks are configured to connect to these storage subsystems and can access any configured storage pool. 
+
+				a SAN makes use of Firbe Chanel over Ethernet (FCoE) or Internet Small computer system interface (iSCSI)
+
+				SAN has storage pools that consists of storage disk arrays, with logical unit numbers (LUNs) for storage
+
+			\Cloud based storage
+				- Onedrive
+				- Azure storage
+					- Blob storage	= any type of binary data 
+					- Table storage	= stores structured datasets - NoSQL key-attribute data store
+					- Queue storage = used for storing messages / events 
+					- File storage	=  usees the standard SMB Protocol. 
+
+		\ Compare MBR and GUID Partition tables (GPT) disks.
+
+			\MBR Disks
+				(older disk format, used with BIOS enabled computers)
+				MBR contains four-partition entry table that describes the size and location of a disk partition by using 32-bit logical block addresing (LBA) fields.
+
+				\How MBR disks work
+
+					The MBR is stored at a consistent location on a physical disk. During the startup process the BIOS will reference the primary partition (which is the OS) and will boot from it.
+
+				\Features of MBR disks
+					- Four partitions on each disk
+					- A 2 TB-maximum partitioning size
+					- No redundancy provided
+
+				MBR Disks can be either basic or dynamic. 
+					- Dynamic: supports addtitional options that are not availible on basic disks, such as spanning the disks for redundancy.
+
+			\GPT Disks
+				GPT is specified for UEFI compatible devices.
+				BIOS enabled devices does support GPT disks but can not boot from them.
+
+				GPT disks contain an aray of partition entries that describe the start and end Logical Block addressing (LBA) of each partition on a disk.
+
+			\Features of GPT Disks
+				128 partitions per disk.
+				18 Exabytes of volume size.
+				Redundancy - Cyclic redundany check (CRC) duplicates and protects the GPT.
+
+				GPT style partitioning can not be used on removable disks.
+
+			\GPT architecture
+				Sector 0 contains a legacy protective MBR (one primary partition and covers the entire disk)
+					- Protective MBR prevents previously MBR tools to detect the disk as unrecognized / interprerets the disk as MBR and could mistakenly cause data loss.
+				Sector 1 contains a partition talbe header. 
+					- Contains the unique disk GUID (global unique identifier), number of partition entries (usually 128) and pointers to the partition table.
+				Sector 2 (start of partition table). Each partition entry contains a unique partition GUID and additional attributes.
+
+				==================================================================================================================================================
+				Logical view
+				==================================================================================================================================================
+				Partitions 												Type 					Size 								Description
+				A 														EFI partition 			100 MB 								Contains the Windows Boot manager
+				B														MSR partition 			128 MB 								Reserved for windows components
+				C														Operating System 		Remainer of disk 					Contains the operating system
+
+		\ Describe a dynamic disk.
+			Dynamic disks provide additional features, such as spanning multiple disks and fault-tolerant volumes. Dynamic disks uses a database to track information about the volumes on dynamic disks on the computer. Each disk stores a replica of the dynamic disk database. The disk database is used as a reference when any repair is made.
+
+				The database is stored in a reserved 1 MB partition on the disk.
+				- Can be created on MBR and GPT
+
+				Features:
+					- Create spanned, striped, mirrored volumes
+					- Extend simple volumes to a noncontiguous space or spanned volume
+					- Remove & repair mirrored volumes
+					- Reactivate a missing or offline disk
+
+				Beware of the following considerations
+					- At least 1 MB of unused space is required on a disk when converting a basic disk to a dynamic disk
+					- You cannot convert a dynamic disk to a basic disk without losing data. All dynamic volumes will have to be deleted.
+					- You cannot use powershell/cmd to manage dynamic disks.
+
+				===============================================================================================================================
+				Basic disks vs. dynamic disks.
+				===============================================================================================================================
+				Disk type 				Advantages 									Disadvantages
+				Basic Disk 				Compatible with most operating systems 		Only users contiguous space on one disk
+										Convert to dynamic disk without data loss.	Limited number of partitions on MBR Disks
+
+				Dynamic Disk  			Multi disk volumes							Only compatible with Windows
+										Fault-tolerant volumes						Does not convert to basic disk without data loss
+										1024 volumes on MBR disks		
+
+		\ Describe the tools availible for managing disks.
+
+			The following tools can be used to manage disks within Windows
+				- Disk manager
+				- Disk part
+				- Windows Powershell 3.0 and up.
+
+
+				\Disk Manager
+				(diskmgmt.msc)
+					- Simpler partition creation
+					- Disk conversion options
+					- Extend and shrink partitions.
+
+				\Disk Part
+				Common commands
+					- list disk
+					- select disk number
+					- convert gpt
+
+				\Windows Powersell
+				common commands
+					- Get-Disk			- 
+					- Clear-Disk
+					- Initialize-Disk
+					- Set-Disk
+					- Get-Volume
+		\ Describe a simple volume.
+
+			A simple disk is a volume that encompasses/uses availible free space form a single, basic, or dynamic hard-disk drive.
+				Characteristics:
+					- Not fault-tolerant. 
+					- Volume I/O performance is the same as disk I/O performance
+
+		\ Describe mirrored, spanned and striped volumes.
+			Disk arrangements support the following volume types (must be in a dynamic disk format) (RAID = Redundant area of independant disks)
+
+				- Mirrored volume (RAID 1)							- Represents two replicated disks that are in one logical volume
+					> Advantages
+					- Recovering from a disk failure is quick and easy 
+					- Read operations have a slight performance boost
+					> Disadvantages
+					- Write operations are slightly slower
+					- Least efficient use of space 
+
+				- Spanned Volume () 								- Represents spanned volumes of two disks or more (up to 32 disks) into one logical disk
+					Disadvantages
+						- Can be created on Dynamic disks only
+						- No I/O performance benifit
+						- No fault tolerance
+						- It is not possible to remove an area from a specific disk. 
+
+				- Striped volume (RAID 0/ RAID 5 w/ parity volume)	- two or more disks with mapped striped volumes of data cyclically accross the disks (combines equal-sized areas of unallocated disks from multiple disks)
+					Disadvantages
+						- Does not provide redundency for data recovery
+						- The more disk you add to a RAID 0 the more unreliable it becomes.
+						- Allocated disk size must be identical
+
+		\ Create volumes, resize and manage volumes.
+			To ensure that maximum contigeous space is retrieved when shrinking a disk, perform the following:
+				- Defragment the disk
+				- Ensure the volume is not storing any page files
+
+			Increasing the size of a simple volume:
+				- Extend the simple volume on the disk - increasing the disk with contigeious space will keep it as a basic disk. When there is noncontigeous space it will convert the disk to a dynamic disk.
+				- Extending a simple volume disk with disk space on other disk will convert the disk to a spanned volume.
+	Maintain disks and volumes
+		---------------------------------
+		\\ Objectives
+			*Explain the primary characteristics of the Storage functionality in Windows client.
+				Storage is used to provide an overview of current disk usages on the disk, storage will provide a report according to catagorization. Storage provides additional features such as setting disk quota's, performing cleanup actions as well as guidance to the folders directly for a more indepth fiew.
+
+			*Describe how to use the Storage functionality.
+
+				Storage provides features such as:
+				-Storage sense							- Allows Windows to automatically cleanup space during set events (during low space/every 30 days/ etc). Note that storage sense can also cleanup unused cloud content 
+				-Cleanup recomendations					- Storage sense will provide recomendations of possible places where you can delete files.
+				
+			*Describe how files stored on disks might fragment.
+				Files become fragmented on a disk due to the inproper method of storing the file and due to the random occurances of usage on said files. The method of reallocating space after a file is deleted is inproper, the OS does not automatically take the free space and move it to a contingeous space as this process will take to long if required to do so whenever a file is deleted. Thus files will be stored according to the "allocated" size and the OS will try to allacte enough space for the file, however with internal fragmentation a space might be over-provisioned and not all the space will be used and leftover fragments will be made.
+
+				Note with external fragmentation the application was allocated a space, however the application did not use the space immediatly or was removed, thus unused space left behind is a fragment (a bit of data but not all)
+
+				Data fragmet is when data is written to files in random intervals, thus fragments of the data will be stored in the next availible block of storage.
+
+			*Describe how to defragment volumes.
+				Defragmenting is the maintanence of file systems, defragmentation is the process that reduces the degree of fragmentation.It does this by physically organizing the contents of the mass storage device used to store files into the smallest number of contiguous regions (fragments, extents). It also attempts to create larger regions by using compactation to impede the return of fragmentation.
+
+			*Explain folder compression.
+				Compression is the means of bit rate reduction, the process of encoding information into fewer bits than the original reprisentation.
+				Types of compresson:
+				Lossless (redundant) & Lossy (non-redudnant)
+
+			*Describe how to compress folders.
+				Right click on the file / folder you wish to compress > select properties > advanced attributes > compress
+
+			*Describe what disk quotas are.
+				Disk quotas are a means of maintaining availible disk space - Windows will notify you whenever a set amount of used space is reached, advanced actions can also be scheaduled upon the reach of a disk quota 
+
+			*Describe how to configure disk quotas.
+				within file explorer, right click on the disk > select quotas > enable quota
+
+		\ Monitor Storage usage
+			Settings>Storage
+			can be used to gather a overview of current usages on the disk
+
+			Categories within Storage
+				System & reserved
+					- Pagefile.sys, hibernation file, system resotore, windows system files, virtual memory
+ 				Apps & features
+				Documents
+				Pictures
+				Music
+				Videos
+				Mail
+				OneDrive
+				Desktop
+				Maps
+				Other people
+				Temporary files
+				Other
+
+		\ Understand disk optimization
+
+			disk defragmentation command = defrag/? 
+			cleanmgr.exe 
+			Fragmentation - The storing of a file in several separate areas of memory scattered throughout a hard disk.
+			https://learn.microsoft.com/en-us/training/modules/maintain-disks-volumes/3-understand-disk-optimization
+			Key types of fragmentation
+				- Internal fragmentation	
+							- Occurs when disk space is over-provisioned and then not used by an application. Disk space is provisioned into fixed-sized units, so any portion of a unit that's unused is a leftover fragment. 
+				- External fragmentation
+							- Occurs when an application or process is removed from a storage system and the used space isn't immediately reallocated. The unused space that's left behind is a fragment.
+				- Data fragmentation
+							- Occurs when data is written to file storage in a non-sequential manner, using the next available block of storage.
+
+			\Solid State Drives
+				- No disk fragmentation is required on SSD drives. Windows storage optimized subsystem automatically uses TROM to mark data blocks as not being used to optimize the drive. 
+
+			\Optimizing a disk
+				Disk optimization is simply reallocating files optimally. 
+	Explore file and folder compression
+		---------------------------------------------------------------------
+			\Configuring compression
+				- Configured within the general tab of a file/folder - advanced settings. (cmd command = compact)
+
+			\Features of NTFS folder compressions
+				> Compression is an attribute of a file or folder.
+				> Volumes, folders, and files on an NTFS volume are either compressed or uncompressed.
+				> New files created in a compressed folder are compressed by default.
+				> The compression state of a folder does not necessarily reflect the compression state of the files within that folder. For example, you can compress a folder without compressing its contents, and you can compress some or all of the files in a compressed folder.
+				> NTFS compression works with NTFS-compressed files without decompressing them because they are decompressed and recompressed without user intervention:
+				> When you open a compressed file, the Windows operating system automatically decompresses it for you.
+				> When the file closes, the Windows operating system compresses it again.
+				> NTFS-compressed file and folder names display in a different color, by default, to make them easier to identify.
+				> NTFS-compressed files and folders only remain compressed while an NTFS volume is storing them.
+				> You cannot encrypt an NTFS-compressed file.
+				> The compressed bytes of a file are not accessible to applications, which see only the uncompressed data:
+				> Applications that open a compressed file can perform tasks on it as if the file was not compressed.
+				> If you copy compressed files to a file allocation table (FAT) or Resilient File System (ReFS) volume, the copy of the file will not be compressed because those file systems do not support NTFS compression.
+
+			\Compressed (zipped) folder
+				> In Windows, you can combine several files and folders into a single compressed folder by using the Compressed (zipped) Folder feature. Use this feature to share a group of files and folders with others, without sending individual files and folders.
+				> Files and folders that you compress by using the Compressed (zipped) Folder feature can compress on both FAT-formatted and NTFS-formatted volumes. A zipper icon identifies files and folders that you compress by using this feature.
+
+				> You can open files directly from these compressed folders, and you can run some of these programs directly from compressed folders without uncompressing them. Files in compressed folders are compatible with other file compression programs and files. You also can move compressed files and folders to any drive or folder on your computer, the Internet, or your network.
+
+				> Compressing folders by using Compressed (zipped) Folder does not affect a computer’s overall performance. Central processing unit (CPU) utilization increases only when you use Compressed (zipped) Folder to compress a file. Compressed files take up less storage space, and you can transfer them to other computers more quickly than uncompressed files. You can work with compressed files and folders the same way you work with uncompressed files and folders.
+	Implement Storage spaces
+		----------------------------------------------------------------------
+				\Objectives
+					* explain what the storage spaces feature is
+						Storage spaces is a virtualization technology that allows you to create a storage pool, this pool allows you to add any form of physical disk to its resources and with it allows you to make use of the space according to the pool's attributes.
+					* describe the features of storage spaces
+						Simple spaces are mainly used for performance, where disks are joined together and is designed for increased performance. Where two&three-way mirrors are created for redundency. and parity is created for storage effieciency and is the most resilient for drive errors (requires 3 drives)
+					* discuss in which scenarios to use the Storage spaces
+						Thin provisioning, relaiable storage, high performance storage 
+					* show how to configure storage spaces
+						Taskbar > Search Storage spaces > Create a new Storage space > Select the type > add the drives
+
+				\Explore storage spaces
+					Storage spaces is a storage virtualization technology that allows you to create a "storage pool" where you can store data, allocate additional space to your existing disks (span) and more, it can help you protct your data from drive failures.
+
+					The primary advantage of Storage Spaces is that you do not have to manage single disks, but can manage multiple disks as one unit.
+
+					- Can be used to group three or more drives together in a storage pool and then use capacity form that pool to create storage spaces.
+					- Availible for NTFS and ReFS volumes.
+					- Configured within powersell/control panel
+
+					STORAGE POOL: a collection of one or more physical disks that you can use to create virtual disks.
+
+					STORAGE SPACE: with the same perspective as physical disks but comes with increased flexibility as they include thin provisioining (Just in time allocations) and include resiliency (comes with disk monitoring)
+					
+					DISK DRIVE: The primary advantage of Storage Spaces is that you do not have to manage single disks, but can manage multiple disks as one unit.
+
+					STORAGE SPACES DIRECT: is for creating highly scalable storage solutions and is designed to configure local drives on a server, performing a role similar to traditional SAN or NAS arrays at a lower cost.
+
+				\Examine features of Storage spaces	
+					Storage Layout
+						Simple space
+						Two-way and three-way mirrors
+						Parity
+
+					Provisioning schemes
+						Thin provisioning spcae 	- Thin provisioning is a mechanism that enables you to allocate storage when the storage space needs it.
+													- The allocation does not happen until the point when datasets grow to require the storage.
+						
+						Fixed (or thick)			- Allocation of storage space is immediate, but employes flexible provisioning slabs.
+
+						The difference between thin provisioning and a fixed provisioning space is that the storage capacity allocation in the fixed provisioning space happens at the same time as storage space creation.
+
+				\Examine scenarios for storage spaces.
+					Thin provisioning storage
+						Storage Spaces can help with storage growth when you use thin provisioning. Thin provisioning will allow you to create a bigger storage space than what the disks will be able to store. You then add the disks to the storage space when you need more storage, and the storage space will automatically claim the space on the disks.
+
+					Reliable storage
+						Storage Spaces can help these companies get fault-tolerant storage for an affordable price. Storage Spaces has two resiliency types that provide fault tolerance.
+
+					High-Performance storage
+						When you create a storage space with parity resilience, the striping will give a better performance reading and writing to the storage. 
+
+

@@ -1,0 +1,310 @@
+Module 8
+Configure Data Access and usage
+	===============================================
+	Explore Windows client file systems
+		-------------------------------------------
+		Objectives
+			* Describe the features of the FAT file system.
+			* Explain the features of the NTFS file system.
+			* Describe the features of the ReFS file system.
+			* Work with the file systems available in Windows client.	
+
+		\Examine the File Allocation Table (FAT) - file system
+			- Contains two  two copies of the FAT within one volume.
+			- a disk formatted in FAT llocated in clusters. When a file is created, an entry is created in the directory and the first cluster number containing data is established.
+			- FAT supports only read-only, hidden, system, and archive file attributes.
+			- Used for removable devices - COMPATIBLE WITH MOST OPERATING SYSTEMS
+
+			Attribute 							FAT 								FAT32 							exFAT
+			Maximum volume size					4 GB								32 GB							2 32-1 clusters
+			Maximum file size					4 GB								4 GB							16 exabytes
+			Maximum files per volume 			65536								4177920							Nearly unlimited
+
+		\Examine the New Technology - File System (NTFS)
+			-Default file system for Windows
+			- convert.exe utility can be used to convert data volumes to file systems
+
+			NFST provides: preformance, relaiablility, advanced features compared to FAT
+			Advantages:
+				- relaiablility			
+											- NTFS uses log-file and checkpoint information to restore the consistency of the file system when the computer restarts. In the event of a bad-sector error, NTFS dynamically remaps the cluster that contains the bad sector, and it allocates a new cluster for the data. NTFS also marks the cluster as bad, and no longer uses it. The recoverability designed into NTFS is such that a user should never have to run any sort of disk repair utility on an NTFS partition.
+
+				- Security					- Supports permissions (RBAC)
+				- Data confidentiality		- supports EFS to protect file contect (Encrypted File system)
+				- Limit Storage growth		- supports disk quotas
+				- Provide additional space 	- compression
+				- Support for large volumes	- support up to 256 TB and 64 kb cluster size
+				- Auditing 					- logs events in event viewer
+				- Advanced Features			- Distributed link tracing, sparse files and multiple data 
+			Disadvantages:
+				- lack of file encryption when booted within a different OS
+				- Unable to format a floppy disk
+				- File system conversion - data must be backed up first before format process can be completed.
+
+		\Examine the resilient file system (ReFS)
+			Build on top of NTFS and is designed to provide the highest level of resiliency, intergrity and scalibility.
+
+			Benifits:
+				- Designed to provide the highest level of protection for data from common errors that can cause corruption. 
+				- ReFS periodically scans&repairs volumes for corruption. If it fails to repair, it will localize the salvagin process of the corruption area (no Down time required)
+				- Supports large volumes without inpacting performance - multiple petabites (2^78 bytes)
+				- Allows control of file permissions and congiguration of auditing.
+
+			Disadvantages
+				- Does not support all of NTFS features = compression, disk quotas, EFS, volume shrinking.
+				- Requires two-way or three-way storage spaces.
+Configure and manage file access
+	=================================================
+	
+		---------------------------------------------
+		Objectives
+		* Describe the tools for managing files and folders.
+		* Describe how to configure file and folder permissions.
+		* Describe the concept of permission inheritance.
+		* Implement conditions to limit file and folder access.
+		* Secure files and folders by using file permissions.
+		* Use the effective permissions feature.
+		* Describe how copying and moving files and folders affect permissions.
+
+	\Explore tools used for managing files and folders
+
+		File explorer
+			File Explorer provides a simple interface that is familiar to most Windows users. You can use File Explorer to perform several functions, including:
+				- Creating files and folders
+				- Accessing files and folders
+				- Managing properties of files and folders
+				- Searching for contect in files and folders
+				- Previewing contents of files and folders
+
+		Command Prompt
+			Commands for navigating through the hierarchy of the file system
+
+			Commands												Purpose
+			cd, chdir												Changes the parent directory
+			md, mkdir												Created a directory
+			del, erase												Deletes one or more files
+			removable												Moves one or multiple files
+			Dir 													Displays a list of files and subdirectories in a directory
+			icacls 													Displays or modifies permissions using access control lists (ACLs)
+
+		Windows Powershell
+			Example commands
+
+			Get-ChildItem 				Displays a directory's list of files and subdirectories
+			Set location 				Changes the parent directory
+			Get-Alias 					view a list of all aliases
+			Get-ACL						Get permissions
+			Set-ACL						Set permissions
+
+				Example:
+					Get-ACL C:\\preflogs \| Format-List
+					Get-ACL C:\\Folder1 \| Set-ACL C:\\Folder2
+
+	\Understand file and folder permissions
+		Type of permissions
+			Basic permissions > Most comonly used permissions, provides basic access
+			Advanced permissions >	Provide a finer degree fo control compared to basic permissions.
+		=================================
+		Basic file and folder permissions
+		==============================================================================================
+		File permissions							Description
+		Full Control								Provides complete control over the file or folder
+		Modify										Allows users to modify a file, write changes to it and change permissions
+		Read & excecute								Allows a user to view and access the content but can't make any changes to it
+		Read 										Allows a user to view the files and folders
+		Write										Allows the user to make changes to the folder and file contect (not the permissions)
+		Special Permissions							Custom configuration
+		================================================================================================
+
+	\Understand permission inheritance
+		Two ways that permissions can be assigned to files or folders
+			- Explict permissions
+				> When you set permissions explicitly directly on a file or folder. Applies to Allow and Deny
+			- Inherited permissions
+				> permissions that are inherited from top level folders, the toplevel folders where assigned explisit permisions.
+
+			Note that inherited permissions can be blocked!!
+
+		Inheritance for all objects
+			(this is when the allow/deny checkboxes are shaded, this means a folder has inherited permissions)
+			Note that Deny overrides Allow unless a folder inherits conflicting settings form different parents. In that case, the settings inherited from the parent closes to the object in the subtree takes precedence.
+
+		Preventing inheritance
+			You can block permission inheritance to restrict access to these files and subfolders.
+
+		Forcing permission inheritance
+			The Advanced Security dialog box for folders includes a Replace all child object permission entries check box with inheritable entries from this object. Selecting this check box will replace the permissions on all child objects for which you can change permissions, including child objects that had Block inheritance configured.
+
+		Implement conditions to limit the file and folder access
+			allows you to utilize user or computer properties to limit access beyond group membership.
+
+			When you specify conditions:
+
+			You use a Group condition so that you can specify that the permission will apply to the user based on the following group-membership rules:
+
+				> Member of Any of the specified groups.
+				> Member of Each of the specified groups.
+				> Not Member of Any of the specified groups.
+				> Not Member of Each of the specified groups
+
+			You use a Device condition so that you can specify that the permission will apply if a user accesses the file from a specified computer or computers. The next unit provides more detail about this condition.
+
+		Understand effective permissions
+			Each file or folder on the NTFS file system or ReFS has inherited or explicit permissions assigned, or both. Windows determines effective permissions by combining the user and group permissions and comparing them to the permissions of the selected user.
+
+			You also can evaluate what the effective permissions will be if you add a user or a device to additional groups, and configure whether to include user and device claims.
+
+		Use effective access feature
+			The Effective Access tab in Advanced Security Settings enables you to view the effective permissions for a user, group, or device account.
+			- Only provides a approximation of what the user has.
+			- Note that effective access only specifies the permissions on a group level, note that the sign in method of the authenticating user is not taken into consideration
+
+			For example, if the user tries to authenticate via a network share (NETLOGON) the access might fail if the right permissions are not applied.
+		
+		Examine permissions when copying and moving files
+			Effects of copying files and folders on permissions:
+				> When you copy a file or folder within a single volume, the copy of the folder or file inherits the permissions of the destination folder.
+				> When you copy a file or folder to a different volume, the copy of the folder or file inherits the permissions of the destination folder.
+ 				> When you copy a file or folder to a volume that doesn't support permissions (non-NTFS and non-ReFS), such as a FAT file system, the copy of the folder or file loses its permissions. This is because the target volume doesn't support permissions.
+
+ 			Effects on moving files and folders
+ 				> Permissions that are inherited at the source location no longer apply and the file or folder that you moved inherits the permissions from the new parent folder. If the file or folder has explicitly assigned permissions, it retains those permissions, in addition to the newly inherited permissions.
+ 				> When you move a file or folder to a different volume, the folder or file inherits the destination folder’s permissions, but it doesn't retain the explicitly assigned or inherited permissions from the source location.
+ 				> When you move a file or folder to a volume that doesn't support permissions (non-NTFS and non-ReFS), the folder or file loses its permissions because the target volume doesn't support permissions.
+
+ 			Commands
+ 				Xcopy /o includes ownershil with ACL settings
+
+ 				Robocopy
+ 					> /Copy:copyflag(s) the default setting is the equivalent of /Copy:DAT where D=Data, A=Attributes, and T=Timestamps. You can add the S flag where S=Security, such as NTFS ACLs.
+					> /Sec is the equivalent of /Copy:DATS.
+Configure and manage shared folders
+	================================================
+		Objectives
+		--------------------------------------------
+		 * Describe shared folders.
+		 * Describe methods for sharing folders.
+		 * Describe the effect of combining file permissions and share permissions.
+
+	\Explore shared folders
+		Shared folders permissions
+			Read 					> users can view the content
+			Change 					> users can modify, delete, create contect but can't modify permissions
+			Full control/read,write	> Uses can perform all actions
+
+		View shared folders 
+			net view \\localhost /all
+			Get-SMBShare
+
+		Connecting to a shared folder
+			Users can connect to a shared folder via a UNC address.
+			\LON-CL1.adatum.com\Sales
+
+	\Examine methods availible for connecting to shared folders.
+		Folders can be shared in the following ways
+			- The shared folders Snap-in
+			- File Explorer
+			- A command prompt
+				net Share name=drive:path
+
+				Option 														Description
+				/Grant:user permission 										Specify Read,Change, or Full Share permissions of a specified user.
+				/Users:number 												Specifies the limit number of users who can connect to the share
+				/Remark:"text" 												Add comment to share
+				/Cache:option 											    Specify the caching options
+				sharename /Delete 											Removes existing share
+			- Windows powershell cmdlets
+				Net-SMBShare -Name ShareName -Path C:\LocalFolder
+
+				Command 													Description
+				Get-SMBShare 												Retrieves a list of the computer's existing shares
+				Set-SMBShare 												Modifies an existing share
+				Remove-SMBShare 											Removes an existing share
+				Get-SMBShareAccess 											retrieves share permissions
+				Grant-SMBShareAccess 										Sets share permissions
+
+	\Examine shared folder properties
+			Share properties
+				How users can view and connect to a share
+				How many users can access a share simultaneously
+				Wich share permissions wil be effective when users access the data through a share
+				the offline settings for the share data
+
+			Share name: Each share name must be unique, does not contain special characters, be apart of UNC Path. If a share name ends with $ = hidden
+			Number of smultaneous users: Limits the amount of users that can access the share simultaneously, disconnects automatically after a period of inactiveness.
+			Caching/offline settings: Cache automatically upon first open, cache offline, no cache at all.
+			Permissions: Share permissions can grant a user access or revoke is
+
+			Advanced share settings must be configured via Powershell:
+
+			Get-SMBShare -Name Folder1 -FolderEnumerationMode Access based
+				(Access-based enumeration displays only the content for which a user has permissions)
+			Get-SMBShare -Name Folder1 | Format-List -Property *
+
+	\Combine shared folder and NTFS permissions
+
+Manage user files
+	================================================
+		Objectives
+		--------------------------------------------
+		* Describe Windows Libraries.
+		* Describe the capabilities of OneDrive.
+		* Configure Windows to synchronize files and settings using OneDrive.
+		* Describe Work Folders and how they contrast to OneDrive.
+		* Configure a client to use Work folders.										
+
+	\Understands Windows Libraries
+		General libraries found in today's OS
+			Documents, Saved Pictures, Videos, Music, Camera Roll.
+		You can include folders in libraries, note that this does not physically move them
+	\Evaluate Onedrive
+		OneDrive is a service that enables the ability to store and access files from all your devices. It is a free cloud-based file service that is available to Microsoft account holders,
+
+		Most important considerations for Onedrive
+
+			> Data loss
+			> Data Migration
+			> Anyware access
+
+		OneDrive Features
+			Known Folder Move
+			OneDrive Files On-Demand
+			Files Restore
+			Recycle Bin
+			Auditing & Reporting
+			Encryption of data in transit and at rest.
+					OneDrive uses advanced data-encryption methods between your client and the data center, between servers in the data center, and at rest. At rest, OneDrive uses disk encryption through BitLocker Drive Encryption and file encryption to secure your data. Each file chunk is then randomly distributed among Microsoft Azure storage containers, making it highly improbably for attackers to access the file.
+		Accessing OneDrive
+			https://www.onedrive.com
+			OneDrive Sync Client
+			groove.exe - old OneDrive
+			Onedrive.exe - new OneDrive.
+	\Enable Onedrive
+			Methods
+				> Share a Onedrive link
+				> More OneDrive sharing optons
+				> View online
+				> Always Keep on this device (checked)
+				> Always keep on this device (unchecked)
+				> Free up space
+
+			Restricting access to OneDrive
+			You can prevent users from accessing onedrive via GPO
+				Configuration\Policies\Administrative Templates\Windows Components\OneDrive
+					> Prevent the usage of OneDrive for file storage policy setting
+
+	\Examine Work folder’s
+		Components of Work Folders
+			- A work folder server  
+			- A sync share
+			- User devices
+		Practical applications 
+			Administrators can use Work Folders to provide users with access to their work files while keeping centralized storage and control over the organization's data. Some specific applications for Work Folders include:
+					-Provide a single point of access to work files from a user's work and personal computers and devices
+ 					-Access work files while offline, and then sync with the central file server when the PC or device next has Internet or intranet connectivity
+ 					-Deploy with existing deployments of Folder Redirection, Offline Files, and home folders
+ 					-Use existing file server management technologies, such as file classification and folder quotas, to manage user data
+ 					-Specify security policies to instruct user's PCs and devices to encrypt Work Folders and use a lock screen password
+ 					-Use Failover Clustering with Work Folders to provide a high-availability solution
+ 		Deploying work folders
+ 			https://learn.microsoft.com/en-us/training/modules/manage-user-files/5-examine-work-folders

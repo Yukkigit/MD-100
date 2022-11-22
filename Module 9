@@ -1,0 +1,403 @@
+Module 9
+Manage apps and Windows updates
+	=========================================================
+		Objectives
+		-----------------------------------------------------
+		* Differentiate between the types of apps in Windows.
+		* Describe manual app installation.
+		* Explain the methods for automating installation of desktop apps.
+
+	\Provide apps to users
+		\\Explore types of Windows apps
+			Desktop apps (Win32 apps)	 		- usual applications, usually run with .exe of .msi 
+			
+			Universal Windows platform apps(UWP)- Packadged in .appx format and must be digitally signed. Installes without "artifacts", protecting the user, device, system and more
+				- More Secure
+				- Cross-Device Windows support
+				- Easy Distribution
+				- Private distribution
+
+			App-V apps 								- Desigend to provide the app virtually to the user withou installing on the system by running a simulated env.
+											  		Included in Windows Enterprise & Education, requires to be enabled via GPO or Powershell (Enable-Appv)
+			- Run multiple versions of apps.
+			- Minimize application conflict.
+			- Simplfy application removal.
+			- Simplfy application upgrades.
+
+			RemoteApp applications					- Windows Server RemoteApp displays locally but runs on the server, utilizing minimal client resources.
+				Scenarios:
+				- Insufficient client hardware
+				- Incompatible OS
+				- BYOD scenarios
+
+		\\Examin methods for deploying desktop apps
+			- Manual installation
+			- GPO 											
+			- Microsft Endpoint Configuration manager
+			- Microsoft Intune
+			- Virtualized applications
+			- Remote applications
+			- Inclusion in Windows operating system image
+		\\Install desktop apps manually
+			\ The Windows installer service 
+				- .msi
+				- Can be deployed manually/locally or via an automatic-appl deployment solution (GPO or Endpoint configuration manager)
+				- to install from a shared folder (Elevated) - Msiexec.exe /i \\lon-dc1\apps\app1.msi
+
+			Setup files (EXE) compared to MSI files
+				Setup files are just wrappers around one or more MSI files (bootstrappers).
+
+				Advantages of EXE
+					- provides more control over the installation process
+					- triggers one or more MSI files
+					- Does all the checking for you, removing the complexity/overhead of the process required to be followed for the installation
+					- Within an EXE, you optionally build a custom UI
+
+				Advantages of MSI
+					- No leftover artifacts when uninstalling apps that where installed using an MSI package
+
+		\\Automate desktop app installation
+			Automating installation by using GPO
+			Requirements
+				- The target must belong to the AD DS domain
+				- Package must be in .msi format
+				- User/computer account "can be targets of an app deployment"
+				- You can targer a deployment at the domain level, site leverl, or OU level.
+
+			GPO support
+				- Assign	> Automatically installs when computer starts
+				- Publish	> Control panel > get program
+
+
+			Automating installation by using MDT
+			(Microsoft deployment toolkit)
+				LTI installation - requires a an trigger on the OS deployment system or app installation on each computer.
+					1. Deploy MDT on a computer that will function as the management computer, create a deployment share on this computer, and then import the image files that you will use.
+					2. Create a task sequence and a boot image for the computer that will function as the reference computer.
+					3. Start the reference computer by using the medium that contains MDT. The task sequence files, task sequence, and boot image transfer to the reference computer.
+ 					4. Use the Windows Deployment Wizard to deploy the operating system and required apps. After deployment, capture the reference computer as an image.
+ 					5. Transfer the captured image to the management computer.
+					6. Create a new boot image and task sequence for deployment to the target computers.
+ 					7. Start the deployment target computers by using the medium that contains MDT. The task sequence files, task sequence, and boot image transfer to the reference computer.
+					8. Run the Windows Deployment Wizard to deploy the prepared image.
+
+				ZTI enables seemless installation without intevention (requires configuration manager)
+
+			Automating installation by using Microsoft intune
+				https://aka.ms/AA3tzmy
+
+			Installation by using Endpoint Configuration manager
+			- supports .exe .msi .appv and .appx file formats
+			- Requires computers to have Configuration manager client installed.
+				Benifits on using Configuration manager
+					- Collections
+					- Multiple deployment types - app installations including (Default apps, remote apps, appv, UWP apps)
+					- Reporting
+					- Wake on LAN
+					- Software inverntory, software metering, asset intelligence
+
+			\Install Microsoft 365 apps
+		
+
+				Deployment options
+				- Click-to Run 						
+				- Configuration manager
+				- Microsoft intune
+				- The office deployment tool (ODT)
+				- App-V
+				- Remote desktop Service (RDS)
+				- Group Policy
+	\Manage Universal Windows Platform
+		-----------------------------------------------------
+		Objectives
+
+		* Describe the Universal Windows apps, Microsoft Store, and Microsoft Store for Business.
+		* Explain how to manage and restrict access to Microsoft Store.
+		* Explain how to resolve issues related to Universal Windows apps.
+		* Explain how to configure assigned access to a Universal Windows app.
+		* Describe the process of using AppLocker to control Universal Windows apps.	
+
+		\\Compare Microsoft store and microsoft store for bussiness
+			UWP applications are availible on mutliple windows devices.
+
+			UWP applications are created with two components.
+			- The Desktop App converter (repackages an existing library into a (UWP) format)
+			- a Runtime that allows UWP packages to operate with ull trust level - it aslo assigns a package identity to a converted app.
+
+			It gives you the a ability to apply a consistent app deployment methodology that uses sideloading and offers a straightfoward and clean uninstallation process.
+
+			Locating UWP Apps
+				You can locate UWP apps within the Windows store
+			Installing UWP apps
+				single step process. Simply browse to the application within the store and click install.
+				Note that a signed in profile is required
+
+			Updating UW apps
+				Windows checks for updates daily.
+			Installing universal windows apps on multiple devices
+				MS Store allows a user to have up to 10 installations of a single application.
+
+			Microsoft store for Bussiness
+				Consists of two parts
+					- Web portal hostd in mS Azure (Business Store portal)
+					- MS Store app, with enterprisedpmanaged private section.
+
+			MS Store 											vs 							MS for Business
+			Purchasing requires and MS account												Purchasing requirs an Azure AD account
+			Each user purchases their own licenses											Administer can purchace multiple applications
+			Deploy apps only through MS Store 												Can deploy apps through the store via deployment tools
+			Supports Win 8.1 and later														Will work in Windows client only
+			UWP apps only 																	Contains Windows apps, desktop apps, and android apps
+																						Only availible in Win 10, Enterprise and Education editions
+
+			Windows Package manager - Allows customers to install and manage private organization apps, as wll as configure their own repository /private catologs
+
+		\\Manage access to Microsoft Store apps
+					Windows Enterprise license required.
+
+				Preventing users from installing apps from MS store
+				Steps
+				1. Run regedit.exe.
+				2. Navigate to HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\WindowsStore. (If the WindowsStore key is not there, you will need to create it.)
+				3. Create a new DWORD value named RemoveWindowsStore, and change the value to 1.
+				4. Before this setting can take effect, you must restart the computer and sign back in.
+
+					Alternative
+					Make use of the GPO setting, 
+				Controlling the applications that users install
+					Windows 10 Enterprise and Win 10 educations enable Applocker control for UWapps
+				\\Managing updates
+					very limited to none control
+
+		\\Configure assigned acces to a single store app
+					To restrict a user account to run a single Universal Windows app, perform the following procedure:
+
+					1. From the Start menu, select Settings.
+					2. Select Accounts, and then select Other people.
+					3. In the right pane, select Set up assigned access.
+					4. Select Choose an account, and then select the account that you want to restrict.
+					5. Select Choose an app, and then select the installed application to which you want to restrict the account.
+					6. Sign out from the computer to make the changes effective.
+
+					When the user signs in to the computer, they will be able to access only the assigned application. You can assign access only to users that have previously signed in to that computer and have the application installed.
+	\Manage the Microsoft Edge browser
+		------------------------------------------------------------------
+		Objectives
+
+		* Describe the features of Microsoft Edge.
+		* Configure and use Microsoft Edge.
+		* Discuss the appropriate browser to use in your organization.
+		* List the productivity features in Microsoft Edge.
+	
+		\ features of Microsoft Edge
+			- Pin to tab
+			- Collections
+			- Syncronization of settings
+			- Pivot between profiles
+			- Paste and go
+			- Web notifications
+			- Imemersive Reader
+			- Additional new or improved features
+					- better accessibility features
+					- Improved battery life
+					- Better browsing experience of improed HTML5 compatibility on Chromium
+					- Improved Security using kernal attack protection
+					- Beter management of favourites  - Store in %LocalAppData%\Packages\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\AC\MicrosoftEdge\User\Default\DataStore\Data\nouser1\120712-0049\DBStore.
+					- Compatible sites can use Windows Hello
+
+		\ configure Microsoft Edge
+
+			\Install the Micrsoft Edge administrative templates
+				You can use GPO to configure policy settings of Microsoft Edge on devices used by the organization (administrative templats / ADMX files required)
+				- Administrative templats add rules and settings for Microsoft Edge to the group policy cCentral Store in AD domain or the Policy Definition template folder on individual computers.
+
+				Two administrative templates
+				msedge.admx 											& 									 msedgeupdate.admx
+				- Default home page URL 																	 - How often automatic update checks are performed
+				- Setting connections to default to HTTPS													 - Changing the update channel
+				- Allowed Extentions																		 - Address or URL of a proxy server
+
+			\Setting mandatory and recomended policies
+				- To configure a mandatory policy, open the Group Policy Editor and go to (Computer Configuration or User Configuration) > Policies > Administrative Templates > Microsoft Edge.
+				- To configure a recommended policy, open the Group Policy Editor and go to (Computer Configuration or User Configuration) > Policies > Administrative Templates > Microsoft Edge – Default Settings (users can override).
+
+			\Verifying applied policies
+					navigate to edge://policy 
+
+		\Examine privacy features in Microsoft Edge
+
+			\InPrivate browsing
+				in private browsing virtually leaves no evidence of browsing or searching history as the session stores no data.
+
+				Note that InPrivate policies are configurable within GPO
+
+			\Tracking protection
+				Tracking Protection Lists can help increase your browsing privacy. When you install a Tracking Protection List, you'll prevent the websites specified in the list from sending your browsing history to other content providers. Microsoft maintains a website that contains Tracking Protection Lists that you can install.
+
+		\Manage microsoft edge extentions
+			Steps to installing extentions
+			1. Open MS edge
+			2. On the top right corner select Extentions
+			3. Select Open microsof Edge add ons
+			4. Search/select the extention you want to install.
+
+		\implement internet explorer mode
+			"IE Mode uses the integrated Chromium engine for modern sites, and it uses the Trident MSHTML engine from Internet Explorer 11 (IE11) for legacy sites."
+
+			\Enterprise
+				it's recommended you configure and deploy a policy to use an Enterprise Mode Site List.
+				- You can access the in-browser Enterprise Site List Manager at edge://compat/SiteListManager.
+				or download Enterprise site manager (v.2) https://www.microsoft.com/en-us/download/details.aspx?id=49974.
+
+			\Enabling micorsoft edge to use the enterprise mode site list
+				Download the latest MS edge policy template
+				Open GPO
+				Select User Configuration/Computer Configuration > Administrative Templates > Microsoft Edge
+				Configure Internet Explorer Intergation
+				Enabled
+
+					On the Options, set the dropdown value to:
+						- Internet explorer Mode
+						or
+						- None
+				in the content pane, double-click configure the Enterprise mode Site List
+				Select Enabled
+
+		\Explain Microsoft Edge insider channels
+
+			Channels
+			stable 				- Updated every 4 weeks
+			Extended Stable		- Updated every 8 weeks
+			Beta				- updated evry for weeks
+			Dev 				- Updated weekly
+			Canary 				- Updated daily
+
+			\Installing Channels
+				Channels can be downloaded  https://www.microsoftedgeinsider.com/en-us/download/ and run seperate from one another side by side.
+				edge://settings:help  for the version info
+
+				Installing via GPO
+					1. Open the local Group Policy Editor and go to Computer Configuration > Administrative Templates > Microsoft Edge Update > Applications > 2. Microsoft Edge.
+					3. Select Target Channel override and then select Enabled.
+					4. Under Options, select Extended Stable from the Policy dropdown list.
+
+
+
+
+
+
+	\Explore the Windows servicing model
+		-----------------------------------------------------
+			Objectives
+				* 	Describe the Windows client service model.
+				*	Describe the different Windows service channels.
+				*	Describe the available methods for applying updates to Windows.
+
+		\Examin the Windows servicing model
+			\\Windows as a service (WaaS)\\
+				Instead of new features being added only in new releases that happen every few years, the goal of Windows as a service is to continually provide new capabilities. New features are provided or updated two to three times per year, while maintaining a high level of hardware and application compatibility.
+
+				Feature updates - Latest features, experiences and capabilities
+				Quality updates - Focuses on the installation of security fixes and other important updates.
+				Chanel updates	- Three choices: 
+										- General availability Chanel 		- Availible as soon as MS releases them.
+										- Long-Term Servicing Chanel LTSC	- Specialized systems - prevents Windows enterprise LTSC devces from reciving usual updates and provides quality updates to ensure device security is updated. 
+
+										- Windows Insider 					- Gaining early visability into the next build
+									 
+				Ring updates	- Method used to sepererate machines from others.
+
+			\\Examine Windows update options\\
+			https://aka.ms/AA60cod
+				Servicing tools 				Can Updates be defferd? 		Ability to approve updates	Peer-to-peer option 		Additional features
+				Windows update 					Yes (manual) 					No 							Delivery Optimization		none
+				Windows update for B 			Yes 							No 							Delivery Optimization 		Other GPO objects
+				WSUS 							Yes 							NO 							Branch Cache or DO 			Upstream/Downstream server scalability
+				Configuration Manager 			Yes 							NO 							Branch Cache or Peer Cache 	Distribution points, multiple deployment options
+
+				\Rolling back upgrades.
+				10 day grace period to roll back to a previous version - modifyable via the DISM tool
+
+				Settings > Update & Security > Recovery
+
+		\Update Windows Clients
+			--------------------------------------------------
+			Objectives
+			* Describe the available methods for applying updates to Windows.
+			* Explain the Windows Update configuration options.
+			* Explain the Group Policy Object (GPO) settings available for configuring Windows Update.
+			* Configure Windows Update.
+			* Describe how to use Windows Server Update Services (WSUS) to provide updates to Windows.
+
+			\Use a WSUS server to deploy updates
+				Provides a central management point for updates to your computers running Windows operating syste,
+
+				WSUS creates a more efficient update enviironment in your organization.
+				You can have multiple WSUS servers that will assist with distribution and caching of updates in remote areas.
+				It is preferred to organize groups for your computers to be appart in, including a Pilot group for testing.
+				Reports can be generated to help monitor the upddate installation process.
+
+			\\the WSUS update management process
+				1. Assess 				- asses your environment
+				2. Identify				- identify new updates that are availible mark the relavance of the updates accordingly
+				3. Evaluate and plan 	- Review all the required updates and dependencies, possibly test the updates before proceeding with deployment. Plan the process ahead
+				4. Deploy 				- After thoroughlt testing, approval can be made and updates will be pushed to the production network. 
+
+			\\Update clients using Windows Update for Business
+				Windows Update for Business enables commercial customers to manage which Windows Updates are received when, as well as the experience a device has when it receives them.
+
+				Windows update Business is used specifically for:
+					The creation of deployment rings, where administrators can specify which devices go first in an update wave, and which ones will come later (to ensure any quality bars are met).
+
+					Selectively including or excluding drivers as part of Microsoft-provided updates.
+
+					Integration with existing management tools such as Windows Server Update Services (WSUS), Configuration Manager, and Microsoft Intune.
+
+					Peer-to-peer delivery for Microsoft updates, which optimizes bandwidth efficiency and reduces the need for an on-site server caching solution.
+
+				Windows update for business proves the following types of updates in Windows:
+					Feature update
+					Quality Update
+					Driver Update
+					Microsoft product updates
+
+				Defer an update
+					You can use this deferral to allow time to validate deployments as they are pushed to devices. Deferrals work by allowing you to specify the number of days after an update is released before it is offered to a device. 
+
+					To defer feature updates, use the Select when Preview Builds and feature updates are received policy.
+
+					Category							Maximum deferral period
+					Feature updates						365 Days
+					Quality updates						30 Days
+
+			\\Use Group Policy settings to configure Windows Update
+				You can create a Group Policy Object (GPO) to configure the necessary settings, and then use Active Directory Domain Services (AD DS) to apply those settings to the appropriate collection of computers.
+
+				Three nodes in Group Policy contain Windows Update settings that are relevant for Windows devices.
+				 - Windows update node 					Computer Configuration/Administrative Templates/Windows Components/Windows Update
+				 		# Configure aotomatic updates
+				 		# Notify for download and notify for install
+				 		# Auto download and notify for install
+				 		# Auto download and schedule the install
+				 		# Allow local admin to choose settins
+				 - Data Collection and Preview builds 	Computer Configuration/Administrative Templates/Windows Components/Data Collection and Preview Builds.
+				 		# Toggle user control over Inside Build
+				 		# Allow Telementry (Diagnostig data to be sent to MS)
+				 		# Disable pre-release features or settings
+				 - Deliver Optimization Node Computer 	Configuration/Administrative Templates/Windows Components/Delivery Optimization
+				 		# Download mode 		Modes: Bypass, Group, HTTP only, Internet, Simple
+				 		# Group ID
+				 			Set this policy to specify an arbitrary group ID to which the device belongs. (GUID)
+				 		# Max Upload bandwidth
+				 		# Max Cache Size
+				 		# Max Cache Age
+
+				\\Troubleshoot Windows updates
+					Test updates
+					Uninstall updates
+					Uninstall drivers
+					Use System resote
+
+
+
+
