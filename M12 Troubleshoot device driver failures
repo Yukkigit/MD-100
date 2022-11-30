@@ -1,0 +1,70 @@
+M12 Troubleshoot device driver failures
+	-------------------------------------------
+	Objectives 
+
+	* Describe the role and importance of device drivers.
+
+		Device drivers are the reponsible party for providing communication between a PnP device/component and the Windows operating system, without the driver the component/device will be inoperable.
+
+	* Manage and troubleshoot device drivers.
+		- tools that can be used to manage devices & device drivers
+			# device manager (devmgmt.msc)
+			# Windows device console (devcon.exe) 
+			# Devices and printers - Control Panel
+			# Powershell cmdlets
+				Enable-PnPDevice 
+				Disable-PnPdevice
+				Get-PnPDevice
+				Get-PnPDeviceProperty
+
+				note that if a driver is causing startup issues for a windows device, starting the device in safe mode will bypass the driver.
+
+				Sigverif.exe - Signature verification tool - determines if Windows is using any unsigned drivers and if signature enforcement is disabled.
+				Run Sigverif.exe to scan for unsigned drivers.
+				Review the resulting log file.
+				Create a temporary folder for the unsigned driver storage.
+				Manually move any unsigned drivers from C:\WIndows\System32\Drivers into the temporary folder.
+				Disable or uninstall the associated hardware devices.
+				Restart the computer.
+
+				Command prompt - driver query /si
+
+
+	* Explain the difference between the staging and installation of device drivers.
+			Staging lists the drivers in the driver store without installing them, allowing a standard user to perfom the installation process.
+
+			Windows checks that the driver does not require any additional LocalSystem security context during instlalation, Windows evaluates the driver packages:
+			Is the driver signed?
+			Is the driver specific to the attatched device or for a compatible set of devices?
+			What is the driver version?
+
+		Benifits of staging driver packages:
+				* Improved security
+				* Reduced support costs
+				* Better user experience
+
+		Staging device drivers manually 
+				Pnputil.exe command
+				1. Obtain a digitally signed driver package.
+				2. Sign in as Administrator, and then open a command prompt.
+				3. At the command prompt, type pnputil.exe /add-driver package_name, and then press Enter.
+				4. The command runs, and Windows verifies the driver’s integrity and digital signature, and then copies the driver into the driver store.
+
+
+		Manage the driver store
+				pnputil.exe /add-driver d:\usbcam\USBCAM.inf 						Adds a package that USBCAM.inf specifies.
+
+				pnputil.exe /add-driver c:\drivers*.inf 							Adds all packages in C:\drivers.
+
+				pnputil.exe /add-driver a:\usbcam\USBCAM.inf /install 				Adds and installs a driver package.
+
+				pnputil.exe /enum-drivers 											Lists all non-Microsoft packages.
+
+				pnputil.exe /delete-driver oem0.inf 								Deletes package oem0.inf.
+
+				pnputil.exe /delete-driver oem0.inf /force 							Forces deletion of package oem0.inf.
+
+	* Restrict installation of device drivers by using Group Policy.
+
+			Automatic device driver can be restriced in GPO
+			
