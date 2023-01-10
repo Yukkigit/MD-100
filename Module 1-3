@@ -1,0 +1,225 @@
+Recap
+MD-100
+Module 1
+
+	{Windows + Z = Snap in hotkey
+	Remote Bussiness Data Removal
+	Virtual secure mode
+	Nearby Sharing}
+
+	* SOE - Simplified Operations Environment
+	- Streamlined Updating
+	- Inventory tracking
+	- Simplified hardware/software deployment
+	- Consistent hardware and applications
+
+	Windows installation methods
+		- In-Place upgrade
+		- Feature upgrade/ New Deployment
+		- Refresh
+		- Provisioning
+		- Migration
+			All can be done with an enterprise-tool - Microsoft deployment tool, Microsoft deployment services, ECM
+
+	Upgrade and Migrate windows client
+		Upgrade Process
+			- Evaluate
+			- Back Up (Onedrive/USMT)
+			- Upgrade 
+			- Verify 
+			- Update
+				Windows Assesment Deployment Toolkit (Win ADK)
+				Changing edditions of Windows versions
+					- MDM
+					- Provisioning Package
+					- changepk.exe
+					- Microsoft Store
+					- Manually entering product key
+				- in place upgrade
+				- upgrade via feature upgrade
+				- Upgrade via images
+		Migration Process
+			- Backup
+			- Install Windows
+			- Update
+			- Install applications
+			- Restore
+					- Side-by-side migration (files are stored on file server (USMT) /onedrive and synced)
+					- in-place migration (windows.old files are creadet & user files are stored locally)
+
+	Deployment methods
+		- Modern 
+			- Windows Auto pilot
+			- In-place upgrade
+		- Dynamic 
+			- Subscription
+			- Azure AD & MDM
+			- Provisioning packages
+		- Traditional
+			- Bare metal
+			- Refresh
+			- Replace
+		High-touch deployment, lite-touch deployment, zero-touch deployment
+
+	Deployment tools 
+	- Windows Assesment Deployment toolkit (ADK)
+	- DISM
+	- Windows Image and configuration designer (ICD)
+	- Windows System image Manager (SIM)
+	- volume activation management tool (VAMT)
+	- Windows preinstallation environment (PE)
+	- Windows deployement sevices
+	- Microsoft deployement toolkit
+
+Module 2
+		- Authorization  - Setting permissions / allowing access to specific resources, files & folders, hours of access, amount of allocated space / other specifications
+		- Authentication - The process that confirms a users identity when attempting to access a resource.
+
+	Windows authentication methods
+		- Kerberos version 5 protocol - client-server based (windows specifically), used to authenticate users and groups 
+		- NTLM (failover if kerberos is not able to perform authentication) - Includes three way handshake and makes use of password hashes (vulnerabilities - Pass-the-hash & brute-force attatcks
+		- Cetrificate mapping	
+
+	User profiles
+		- Each user contains their own data file NTUser.dat - maps to HKEY_CURRENT_USER	
+
+	Acitve Directory is group of services repsonsible for identety-related management. it is uses a structured data store as the basis for logical, hierarchical orginization and directory information = referred to as objects. 
+
+	AD Services (AD DS) are repsonsible for storing directory data and making it availible to the .
+	network 
+
+	Azure AD  is a cloud based identity and access mangement service, responsible for prividing accessibility to resoucres for the network and administrators.
+	Azure AD is able to sync with AD DS via the Azure AD Connect tool allowing on-premises & cloud to connect.
+		Azure AD conncet tool provides the following functionalities
+			- Password has syncronization - allows hashes of passwors to be synched to the cloud
+			- Pass-through authentication - Allows users to use the same password as on-prem
+			- Federation intergration	  - 
+			- Syncronization			  - Responsible for synchronizing resources / information
+			- Health monitoring
+
+	Sign into domain
+		- AD DS
+			- If the DNS servers are not ser properly the following failures might occur
+				- Authentication failures
+				- Slow sign ins
+				- Windows uses cached credentials
+			When permissions are applied you must perform the following
+				- reauthenticating user account - re-sign into the profile
+				- reauthenticating a computer 	- restart the system
+
+	Microsoft Device stratergy framework
+		High trust, low trust, high freedom, low freedom
+			(summarized as followis)
+			- On your own			
+			- Bring your own device		- Managed device / unmanaged device
+			- Choose your own device (CYOD)
+			- Here is your own device 
+
+	Device registration
+		Purpose
+			- Registratioin in AD DS for non-domain joined devices
+			- SSO for selected applications and resources in a company's internal network
+
+			Device registration signs devices with a CA which is used to authenticate the device when accessing resources.
+
+Module 3
+	Windows activation types
+		- OEM
+		- Retail
+		- Microsoft volume licensing/ volume activation
+			AD Activation, KMS, multiple activation methods (MAK)
+
+
+				- Active directory-based activation (ADBA)
+					- Enables activation for devices that are connected to the domain
+					- The device requires a generic volume license key (GVLK)
+				- MAK activation
+					- For devices that infrequently connect to the corporate server - 
+						- MAK independant activation - each device connects to the internet / telephone to activate
+						- MAK proxy activation		 - connects to a proxy server to activate
+				- KMS activation 
+					- Devices connect to the KMS server every 2 hours to attempt activation - KMS Server activates via connection to the internet
+					- The device confirms activation every 180 days
+					- Workgroup connections are availible
+					- RCP protocol over TCP/IP 1688 
+
+	script to confirm activtion status - cscript C:\windows\system32\slmgr.vbs -dli
+
+	Group policy
+		- GPO applies in the following order
+			- Local GPO
+			- Site GPO
+			- Domain GPO
+			- OU GPO
+			- Child OU policies
+
+		- options for modifying GPO processing
+			- Security filtering - Making use of security permissions to specify who is able/or not to access the GPO
+			- Enfocement		 - enforcing a GPO
+			- Block Inharitance	 - prevngint lower OU from inharinting the GPO policy from higher OU
+
+	Windows poweshell
+		- uses drives to access set data on the system
+			- The C drive
+			- The cert drive
+			- The Env drive
+			- Th HKCU drive
+			- The HKLM drive
+			- Variable drive - variables stored in the system memory
+
+		- CMDLETS
+			- Cmdlets are based on paramaters such as "Get-NetIPAddress, Start-Service"
+				- Get-help represents a helper and provides additional information of the specified parameters
+				- Get-Command provides a list of installed/availible commands
+
+		Windows start menu
+		Windows 10
+			- Exporting the start menu to XML
+				Export-StartLayout -UseDesktopApplicationID -Path \\FileServer01\StartLayouts\StartLayoutMarketing.xml
+
+			- Full layouts 
+				: Lockes the start menu layout
+			- Partial layouts
+				Modify the <DefaultLayoutOverride> element to include the following property:
+					<DefaultLayoutOverride LayoutCustomizationRestrictionType="OnlySpecifiedGroups">
+		Windows 11
+			- Export-StartLayout -Path "C:\Layouts\LayoutModification.json"
+
+		Configuring Windows Taskbar
+			- Universal Windows Platform apps use the element <taskbar:UWA>and include the Application User Model ID (AUMID).
+			- Desktop applications use the element <taskbar:DesktopApp> and include the Desktop Application Link Path.
+
+				- UWP elements - <taskbar:UWA> 
+				- Desktop apps elements - <taskbar:DesktopApp>
+				- Use command "Get-StartApps" to find the identifiers
+
+	Drivers
+		- Consists of 3 files
+			-.inf file - provides information about the driver file
+			- any file that the .inf file references
+			- catalog (.cat) file - contains a signed certificate of the device driver
+		- stored in %Systemroot%\System32\driverstore	
+
+	Printers
+		Note some printers require the drive to be installed before adding the printer - best practice
+		Printmanagement.msc - used to manage installed printers & remote device printers 
+		printutil.exe - cmd command
+		Devices and Printers - used to manage locally
+
+		- Deployment methods
+			- Add a locally attached printing device automatically
+			- Manually browse for a shared network printer
+			- Find a printer in the directory
+			- Deploy printers by using Group Policy settings
+			- Deploy printers by using Group Policy preferences
+		Type 3 vs Type 4
+			- A Type 4 printer driver model provides the following benefits:
+			- Sharing a printer doesn't require adding extra drivers that match the client architecture.
+			- A single Type 4 driver can support multiple printer models.
+			- Driver files are isolated on a per-driver basis, which prevents potential driver file-naming conflicts.
+			- Driver packages are smaller and more streamlined than Type 3 drivers, and Type 4 drivers install faster than Type 3 drivers.
+			- Printer driver and the printer user interface can be deployed independently with Type 4 drivers.
+
+
+
+
