@@ -56,15 +56,16 @@ Configure post-installation settings and personalization
 			- Location
 			- Battery saver
 			- Airplane mode
-			- WiFi
+			- Wi-Fi
 			- Bluetooth
 
 	\Configure power plans
 		Power Plans
-			Power Plan 		Energy Usage 		Screen Brightness 				System Activity
-			Balanced		Medium				Can turn off display 			Measures activity - provides power when needed
-			Power Saver		Least				Default - Display of A 5 min 	Saves energy by reducing performance
-			High Performanc	Highest				Screen = highest brightness		Keeps hardware continiously supplied with power
+			Power Plan 			Energy Usage 	   Screen Brightness 			System Activity
+			-----------			------------	   -----------------			----------------
+			Balanced			Medium		   Can turn off display 		Measures activity - provides power when needed
+			Power Saver			Least		   Default - Display of A 5 min 	Saves energy by reducing performance
+			High Performanc	Highest				   Screen = highest brightness		Keeps hardware continiously supplied with power
 
 	\Manage drivers and device peripherals
 		Examine device drivers
@@ -101,14 +102,14 @@ Configure post-installation settings and personalization
 					- Run the "Add Printer Wizard" to install the printer
 					- USB printers requires you to install the printer driver before attatching it.
 
-						- Add a locally attatched printing device automatically - add the driver to the driver store and it should automatically conenct
+						- Add a locally attatched printing device automatically - add the driver to the driver store and it should automatically connect
 						- Manually browsed for a shared network printer
 						- Find a printer in the directory - When in an AD DS enviorment, administrators has the availibility to share the printer. (share printer)
 						- Deploy printers by using Group policy settings - Right click the printer in print management and select deploy with GPO
 						- Deploy by using GPO preferences - You can use GPO preferences to create, update, replace and delete a printer.
 
 			Understand Type 3 and 4 printer drivers
-				Comon printing languages include PCL, PostScript and XPS
+				Common printing languages include PCL, PostScript and XPS
 
 				Type 4 printer driver module includes the following benifits:
 					- Sharing a printer doesn't require adding extra drivers that match the client architechture
@@ -159,7 +160,7 @@ Explore advanced configuration methods
 				- MAK Proxy:		- Centralized activation requests on behalf of multiple computers with one connection to Microsoft.
 
 		\ADBA (Active Directory-Based Activation)
-			Enables enterprises to activate computers by connecting to their domain. When a user connects to the domain, the ADBA object automatically activates Windows installed on their computer, as long as the computer ahs a Generic Volume License Key (GVLK)
+			Enables enterprises to activate computers by connecting to their domain. When a user connects to the domain, the ADBA object automatically activates Windows installed on their computer, as long as the computer has a Generic Volume License Key (GVLK)
 
 	\Group Policy 
 
@@ -170,16 +171,15 @@ Explore advanced configuration methods
 
 		Two distinct types of group policy settings
 			- User Settings		- HKEY_CURRENT_USER
-			- Computer settings - HKEY_LOCAL_MACHINE
+			- Computer settings 	- HKEY_LOCAL_MACHINE
 
 		Each having three areas of configuration
-		Section								Description
+		Section							Description
+		-------							-----------
 		Software settings					Can be deployed to a user or computer
-
-		Windows operating system settings	Contains script settings for user and computer 
-		
-		Administrative templates			Contains settings that modify the registry to control various aspects of the user and computer enviorment.
-											Note that templates are downloadable 
+		Windows operating system settings			Contains script settings for user and computer 
+		Administrative templates				Contains settings that modify the registry to control various aspects of the user and computer enviorment.
+									Note that templates are downloadable 
 
 	\Applying GPO's
 
@@ -207,7 +207,43 @@ Explore advanced configuration methods
 			partial layout/customizable-	Modify - <DefaultLayoutOverride LayoutCustomizationRestrictionType="OnlySpecifiedGroups"> - Save the xml file
 
 		Customizing the Taskbar
+			Windows 11
+			- Export-StartLayout -Path "C:\Layouts\LayoutModification.json"
 
+		Configuring Windows Taskbar
+			- Universal Windows Platform apps use the element <taskbar:UWA>and include the Application User Model ID (AUMID).
+			- Desktop applications use the element <taskbar:DesktopApp> and include the Desktop Application Link Path.
+
+				- UWP elements - <taskbar:UWA> 
+				- Desktop apps elements - <taskbar:DesktopApp>
+				- Use command "Get-StartApps" to find the identifiers
+
+	Drivers
+		- Consists of 3 files
+			-.inf file - provides information about the driver file
+			- any file that the .inf file references
+			- catalog (.cat) file - contains a signed certificate of the device driver
+		- stored in %Systemroot%\System32\driverstore	
+
+	Printers
+		Note some printers require the drive to be installed before adding the printer - best practice
+		Printmanagement.msc - used to manage installed printers & remote device printers 
+		printutil.exe - cmd command
+		Devices and Printers - used to manage locally
+
+		- Deployment methods
+			- Add a locally attached printing device automatically
+			- Manually browse for a shared network printer
+			- Find a printer in the directory
+			- Deploy printers by using Group Policy settings
+			- Deploy printers by using Group Policy preferences
+		Type 3 vs Type 4
+			- A Type 4 printer driver model provides the following benefits:
+			- Sharing a printer doesn't require adding extra drivers that match the client architecture.
+			- A single Type 4 driver can support multiple printer models.
+			- Driver files are isolated on a per-driver basis, which prevents potential driver file-naming conflicts.
+			- Driver packages are smaller and more streamlined than Type 3 drivers, and Type 4 drivers install faster than Type 3 drivers.
+			- Printer driver and the printer user interface can be deployed independently with Type 4 drivers.
 
 
 
